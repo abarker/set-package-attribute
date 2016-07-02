@@ -4,17 +4,29 @@
 Description
 -----------
 
-In order to run a module inside a package as a script and have relative imports
-work, the `__package__` attribute of the module should be set.  Importing this
-module sets the `__package__` attribute of the module `__main__`.  This module
-is intended to be imported by modules which might be run as a script inside a
-package which uses relative imports.
+In order to run a module inside a package as a script and have explicit
+relative imports work, the `__package__` attribute of the module should be set.
+Importing this module sets the `__package__` attribute of the module
+`__main__`.  This module is intended to be imported by modules which might be
+run as a script inside a package which uses explicit relative imports.
 
 To use the module, just import it before any of the non-system files, inside
 any module that you want to possibly run as a script.  Nothing else is
-required.  This module needs to be imported before any relative imports or
-modules which use relative imports.  Any existing `__package__` attributes will
-remain unchanged.
+required.  This module needs to be imported before any explicit relative
+imports or any modules which use such imports.  Any previously-set
+`__package__` attributes (other than `None`) will be left unchanged.
+
+Note that this module needs to import the package directory containing the
+script.  A side-effect of this is that any `__init__.py` files in the package
+path down to the script (from the top package level) will be executed.  This
+could give unexpected results, depending on how `__init__.py` files are used in
+a given package.  The effect is essentially the same as if the script file had
+been imported from another module using its fully-qualified module name.
+
+An alternative approach is to always execute a script `module_name` as, for
+example, `python -m pkg_toplevel.pkg_subdir.module_name`.  This requires the
+full package name, however, and a different invocation method than other
+scripts.
 
 Further details
 ---------------
@@ -47,67 +59,70 @@ name and the module is also added to `sys.modules` under the full package name.
 
 .. default-role:: code
 
+Main function (called on import)
+--------------------------------
 """
-
-# TODO: note in docs that all the __init__.py files on path to the script will
-# be executed when this script is used!
 
 from __future__ import print_function, division, absolute_import
 import os
 import sys
 
-"""Set the `__package__` attribute of the module `__main__` if it is not
-already set."""
-# Get the module named __main__ from sys.modules.
-main_found = True
-try:
-    main_module = sys.modules["__main__"]
-    print("__main__ found!!!!!!!!!!!!")
-except KeyError:
-    main_found = False
-    print("no __main__ found!!!!!!!!!!!!")
+def set_package_attribute():
+    """Set the `__package__` attribute of the module `__main__` if it is not
+    already set."""
+    # Get the module named __main__ from sys.modules.
+    main_found = True
+    try:
+        main_module = sys.modules["__main__"]
+        print("__main__ found!!!!!!!!!!!!")
+    except KeyError:
+        main_found = False
+        print("no __main__ found!!!!!!!!!!!!")
 
-# Do nothing unless the program was started from a script.
-if main_found and main_module.__package__ is None:
+    # Do nothing unless the program was started from a script.
+    if main_found and main_module.__package__ is None:
 
-    importing_file = main_module.__file__
-    print("importing file is", importing_file)
-    dirname, filename = os.path.split(
-                           os.path.realpath(os.path.abspath(importing_file)))
-    filename = os.path.splitext(filename)[0]
-    print("dirname and filename are", dirname, filename)
-    parent_dirs = [] # A reverse list of package name parts to build up.
+        importing_file = main_module.__file__
+        print("importing file is", importing_file)
+        dirname, filename = os.path.split(
+                               os.path.realpath(os.path.abspath(importing_file)))
+        filename = os.path.splitext(filename)[0]
+        print("dirname and filename are", dirname, filename)
+        parent_dirs = [] # A reverse list of package name parts to build up.
 
-    # Go up the dirname tree to find the top-level package dirname.
-    while os.path.exists(os.path.join(dirname, "__init__.py")):
-        dirname, name = os.path.split(dirname) 
-        parent_dirs.append(name)
+        # Go up the dirname tree to find the top-level package dirname.
+        while os.path.exists(os.path.join(dirname, "__init__.py")):
+            dirname, name = os.path.split(dirname) 
+            parent_dirs.append(name)
 
-    if parent_dirs: # Do nothing if no __init__.py file was found.
+        if parent_dirs: # Do nothing if no __init__.py file was found.
 
-        # Get the package name and set the __package__ variable.
-        full_package_name = ".".join(reversed(parent_dirs))
-        main_module.__package__ = str(full_package_name)
+            # Get the package name and set the __package__ variable.
+            # Note: the package name does not include the name of the module itself.
+            full_package_name = ".".join(reversed(parent_dirs))
+            main_module.__package__ = str(full_package_name)
 
-        # Now do the actual import of the full package.
-        print("\nfull_package_name is", full_package_name)
-        # The script module is run *twice* if below line is uncommented!
-        #full_package_name += "." + filename # LEAVE COMMENTED OUT
-        try:
-            package_module = __import__(full_package_name)
-        except ImportError:
-            # Failure; insert dirname in sys.path, then try the import again.
-            sys.path.insert(1, dirname) # Use 1 instead of 0; 0 is script's dir.
-            package_module = __import__(full_package_name)
+            # Now do the actual import of the full package.
+            print("\nfull_package_name is", full_package_name)
+            # The script module is run *twice* if below line is uncommented!
+            #full_package_name += "." + filename # LEAVE COMMENTED OUT
+            try:
+                package_module = __import__(full_package_name)
+            except ImportError:
+                # Failure; insert dirname in sys.path, then try the import again.
+                sys.path.insert(1, dirname) # Use 1 instead of 0; 0 is script's dir.
+                package_module = __import__(full_package_name)
 
-        assert full_package_name in sys.modules # True
-        # TODO: I added this part... seems like it sets the right alias to the module...
-        full_package_name += "." + str(filename) # Add filename part to the end.
-        assert full_package_name not in sys.modules # True
-        sys.modules[full_package_name] = main_module
+            assert full_package_name in sys.modules # True
+            # TODO: I added this part... seems like it sets the right alias to the module...
+            full_package_name += "." + str(filename) # Add filename part to the end.
+            assert full_package_name not in sys.modules # True
+            sys.modules[full_package_name] = main_module
 
-        # Add the package's module to sys.modules.
-        # TODO: commenting this out seems to fix problem with bottom-level import tests...
-        #sys.modules[full_package_name] = package_module
-        #print("set_package_attribute set sys.modules to have module", full_package_name)
+            # Add the package's module to sys.modules.
+            # TODO: commenting this out seems to fix problem with bottom-level import tests...
+            #sys.modules[full_package_name] = package_module
+            #print("set_package_attribute set sys.modules to have module", full_package_name)
+
+set_package_attribute()
 

@@ -13,20 +13,14 @@ Docs on the setup function kwargs:
 """
 
 from __future__ import absolute_import, print_function
-from glob import glob
-from os.path import basename
-from os.path import dirname
-from os.path import join
-from os.path import splitext
-from os.path import abspath
-from setuptools import find_packages
-from setuptools import setup
-from codecs import open # Use a consistent encoding.
-
-current_dir = abspath(dirname(__file__))
+import glob
+import os.path
+from setuptools import setup, find_packages
+import codecs # Use a consistent encoding.
 
 # Get the long description from the README.rst file.
-with open(join(current_dir, "README.rst"), encoding="utf-8") as f:
+current_dir = os.path.abspath(os.path.dirname(__file__))
+with codecs.open(os.path.join(current_dir, "README.rst"), encoding="utf-8") as f:
     long_description = f.read()
 
 setup(
@@ -75,7 +69,8 @@ setup(
     long_description=long_description,
     packages=find_packages("src"),
     package_dir={"": "src"},
-    py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
+    py_modules=[os.path.splitext(os.path.basename(path))[0]
+                for path in glob.glob("src/*.py")],
 
 )
 

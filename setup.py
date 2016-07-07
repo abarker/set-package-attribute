@@ -33,16 +33,9 @@ setup(
     name="set-package-attribute",
     version="15.10", # Versions should comply with PEP440.
     description="Automatically set the __PACKAGE__ attribute of a script.",
-    long_description=long_description,
-    author="Allen Barker",
-    author_email="Allen.L.Barker@gmail.com",
+    keywords=["module", "package", "import", "relative import", "script"],
+    install_requires=["pytest>=2.0"],
     #url="https://github.com/pypa/sampleproject",
-
-    packages=find_packages('src'),
-    package_dir={'': 'src'},
-    py_modules=[splitext(basename(path))[0] for path in glob('src/*.py')],
-    include_package_data=True,
-    zip_safe=False,
 
     license="MIT",
     classifiers=[
@@ -52,27 +45,37 @@ setup(
         #   4 - Beta
         #   5 - Production/Stable
         "Development Status :: 4 - Beta",
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: MIT License',
-        'Operating System :: Unix',
-        'Operating System :: POSIX',
-        'Operating System :: Microsoft :: Windows',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
-        'Programming Language :: Python :: 3.5',
-        'Programming Language :: Python :: Implementation :: CPython',
-        'Programming Language :: Python :: Implementation :: PyPy',
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: Unix",
+        "Operating System :: POSIX",
+        "Operating System :: Microsoft :: Windows",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 2.7",
+        "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.3",
+        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: Implementation :: CPython",
+        "Programming Language :: Python :: Implementation :: PyPy",
         # uncomment if you test on these interpreters:
-        # 'Programming Language :: Python :: Implementation :: IronPython',
-        # 'Programming Language :: Python :: Implementation :: Jython',
-        # 'Programming Language :: Python :: Implementation :: Stackless',
-        'Topic :: Utilities',
+        # "Programming Language :: Python :: Implementation :: IronPython",
+        # "Programming Language :: Python :: Implementation :: Jython",
+        # "Programming Language :: Python :: Implementation :: Stackless",
+        "Topic :: Utilities",
     ],
 
-    keywords=["module", "package", "import", "relative import", "script"],
-    install_requires=["pytest>=2.0"],
+    # Settings usually the same.
+    author="Allen Barker",
+    author_email="Allen.L.Barker@gmail.com",
+    include_package_data=True,
+    zip_safe=False,
+
+    # Automated stuff below
+    long_description=long_description,
+    packages=find_packages("src"),
+    package_dir={"": "src"},
+    py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
+
 )
 

@@ -8,10 +8,14 @@
 for p in "python"
 do
    $p ./test_not_in_package.py
+   echo
    $p ./test_importing_package.py
 
+   echo
    $p ./toplevel/test_at_toplevel.py
+   echo
    $p ./toplevel/subdir/test_in_subdir.py
+   echo
    $p ./toplevel/subdir/subsubdir/test_in_subsubdir.py
 done
 

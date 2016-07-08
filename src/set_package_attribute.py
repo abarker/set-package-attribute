@@ -14,7 +14,8 @@ import other modules which do.
 
 To use the module, just import it before any of the non-system files, inside
 any module that you want to possibly run as a script.  The import should be
-in a guard conditional to only run when the module is executed as a script::
+inside a guard conditional, to only run when the module is executed as a
+script::
 
    if __name__ == "__main__": import set_package_attribute
 
@@ -23,22 +24,53 @@ explicit relative imports, and before importing any modules from the same
 package which use such imports.  Any previously-set `__package__` attributes
 (other than `None`) will be left unchanged.
 
-Note that internally this module also needs to import the package directory
-containing the script module under its full package-qualified name.  A
-side-effect of this is that any `__init__.py` files in the package path down to
-the script (from the top package level) will be executed.  This could give
-unexpected results, depending on how `__init__.py` files are used in a given
-package.  The effect is essentially the same as if the script file had been
-imported from another module using its full, package-qualified module name.
+.. note::
+
+    Internally this module also needs to import the package directory
+    containing the script module under its full package-qualified name.  A
+    side-effect of this is that any `__init__.py` files in the package path
+    down to the script (from the top package level) will be executed.  This
+    could give unexpected results compared to running the script outside the
+    package, depending on how `__init__.py` files are used in a given package.
+    The effect is essentially the same as if the script file had been imported
+    from another module using its full, package-qualified module name.
 
 .. note::
 
     If the guard conditional `if` is left off the import it will still work.
     The problem would be when an external script, also in a package, explicitly
-    or implicity imports module which imports `set_package_attribute`.  That
-    includes importing it as part of its full package.  It would have the
-    side-effect of setting the package attribute of the external script module,
-    which might result in unexpected behavior that could be difficult to debug.
+    or implicity imports module which imports `set_package_attribute`.  (That
+    includes importing it as part of its full package.)  This would have the
+    side-effect of setting the package attribute of the `__main__` module for
+    the external script, which might result in unexpected behavior that could
+    be difficult to trace.
+
+Another use of this package is that it allows explicit relative imports to be
+used for intra-package imports in the main module of a Python application
+(i.e., in a Python application's entry-point script).  Usually, `as described
+in the Python documentation
+<https://docs.python.org/3/tutorial/modules.html#intra-package-references>`_,
+these imports should always be absolute imports.  That is, without the
+`__package__` attribute being set such modules should generally only import
+intra-package modules by their full, package-qualified names).  The guard
+conditional is not required in this case, assuming the application will always
+be run from the entry point rather than imported.
+
+Installation
+------------
+
+The simplest way to install is to use pip:
+
+.. code:: bash
+
+   pip install set-package-attribute
+
+The package can also be installed by cloning it and running its `setup.py` file
+in the usual way.  The GitHub URL is `https://github.com/abarker/pytest-helper
+<https://github.com/abarker/set-package-attribute>`_.
+
+The package currently consists of a single module, which can also simply be
+copied to somewhere in the Python path (in order to avoid adding a dependency).
 
 Further details
 ---------------
@@ -90,10 +122,11 @@ fully-qualified name.  An entry for the `__main__` module is also added to
 ..  Copyright (c) 2015 by Allen Barker.
     License: MIT, see LICENSE for more details.
 
-Main function (called on import)
---------------------------------
+Main function (called on import initialization)
+------------------------------------------------
 """
 
+# TODO: delete this comment below after reviewing.......
 # TODO: we ONLY want to run if we are invoked *as* __main__, not any time when
 # imported.  Maybe when package that imports imports, but better *not* to.
 # Otherwise, we *always* set the package for __main__ any time thing is run as
@@ -110,6 +143,10 @@ Main function (called on import)
 #
 # Alternative: use a guard clause, if __name__ == "__main__": import
 # set_package_attribute
+
+# TODO: maybe note describing explicit relative imports, i.e., imports with a
+# leading period in them.  (Does that cover all cases?)
+# TODO: maybe give explicit clone command rather than just address...
 
 from __future__ import print_function, division, absolute_import
 import os

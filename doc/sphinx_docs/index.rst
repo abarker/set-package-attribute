@@ -6,7 +6,7 @@
 set-package-attribute
 =====================
 
-Allow scripts which are located inside packages to be run as scripts, even if
+Allow modules which are located inside packages to be run as scripts, even if
 explicit relative imports are used.
 
 .. automodule:: set_package_attribute

@@ -15,9 +15,9 @@ explicit relative imports are used.
     :show-inheritance:
 
 ..
-.. toctree::
-   :maxdepth: 4
-   set_package_attribute
+   .. toctree::
+      :maxdepth: 4
+      set_package_attribute
 
 ..
  Indices and tables

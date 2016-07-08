@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-
+Test the import of `set_package_attribute` when not inside a package.
 """
 
 from __future__ import print_function, division, absolute_import
 import sys
 
 import set_package_attribute
-
-print("The __package__ is", __package__)
+set_package_attribute.init()
 

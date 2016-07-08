@@ -1,53 +1,66 @@
 # -*- coding: utf-8 -*-
 """
 
-Test set_package_attribute.
+Test set_package_attribute, from the subsubdir level.
 
 """
 
-from __future__ import print_function, division, absolute_import, unicode_literals
-import sys
-if __name__ == "__main__": import set_package_attribute
-# Deleting all refs to the current dir is sys.path does *not* fix below....
-#del sys.path[1]
-#del sys.path[3]
-#del sys.path[2]
-print("\nThe sys.path is", sys.path, "\n")
-print("\nThe __package__ in 'test_in_subsubdir.py' module is", __package__, "\n")
-print("\nModules")
-#for m in sys.modules:
-#    print("  ", m)
-#print("\nmodule toplevel.subdir.subsubdir.subsubdir_module:")
-#print("   ", sys.modules["toplevel.subdir.subsubdir.subsubdir_module"])
+from __future__ import print_function, division, absolute_import
+if __name__ == "__main__":
+    import set_package_attribute
+    set_package_attribute.init()
 
 # Import from top level.
 
-from toplevel import toplevel_module
-from ... import toplevel_module
-assert toplevel_module.value
+from toplevel import toplevel_module as top_imp_1
+from ... import toplevel_module as top_imp_2
+assert top_imp_1 is top_imp_2
+assert top_imp_1.value is top_imp_2.value
 
 # Import from subdir level (parent).
 
-from toplevel.subdir import subdir_module
-import toplevel.subdir.subdir_module
-assert subdir_module.value
+import toplevel.subdir.subdir_module as subdir_imp_1
+from toplevel.subdir import subdir_module as subdir_imp_2
+assert subdir_imp_1 is subdir_imp_2
 
 # Import from sibling dir.
 
-from ..subsubdir_sibling import subsubdir_sibling_module
-from toplevel.subdir.subsubdir_sibling import subsubdir_sibling_module
-assert subsubdir_sibling_module.value
+import toplevel.subdir.subsubdir_sibling.subsubdir_sibling_module as sibling_imp_1
+from toplevel.subdir.subsubdir_sibling import subsubdir_sibling_module as sibling_imp_2
+from ..subsubdir_sibling import subsubdir_sibling_module as sibling_imp_3
+assert sibling_imp_1 is sibling_imp_2 is sibling_imp_3
+
+from ..subsubdir_sibling.subsubdir_sibling_module import value
+assert value is sibling_imp_1.value
 
 # Import from current dir (subsubdir).
 
-import toplevel.subdir.subsubdir.subsubdir_module
-from toplevel.subdir.subsubdir import subsubdir_module
-from . import subsubdir_module
-from ..subsubdir import subsubdir_module
-from .subsubdir_module import value # Import module attribute.
-# Below line works but causes double import of module with above.  The
-# script dir is placed on sys.path, where it is found and re-imported.
+import toplevel.subdir.subsubdir.subsubdir_module as subsubdir_imp_1
+from toplevel.subdir.subsubdir import subsubdir_module as subsubdir_imp_2
+from . import subsubdir_module as subsubdir_imp_3
+from ..subsubdir import subsubdir_module as subsubdir_imp_4
+assert subsubdir_imp_1 is subsubdir_imp_2 is subsubdir_imp_3 is subsubdir_imp_4
+
+from .subsubdir_module import value
+assert subsubdir_imp_1.value is value
+
+# Below line works as a script but causes double import of module with above.
+# The script's dir is placed on sys.path, where it is found and re-imported
+# with a different name. NOTE it is not just at sys.path[0], either...  two
+# copies get added.  (Python 3 removed implicit relative imports, so it isn't
+# that.)  The import FAILS when this module is imported as a regular package in
+# Python 3, though, because it is not on sys.path and no implicit relative.
 #from subsubdir_module import value
-assert subsubdir_module.value
-assert value
+#print(sys.path)
+
+# When run as a script, make sure the package-qualified name is the same
+# module as __main__.
+if __name__ == "__main__":
+    import sys
+    assert sys.modules["__main__"] is sys.modules[
+            "toplevel.subdir.subsubdir.test_in_subsubdir"]
+
+    import toplevel.test_at_toplevel # Recursive import, just to test.
+    assert sys.modules["__main__"] is sys.modules[
+            "toplevel.subdir.subsubdir.test_in_subsubdir"]
 

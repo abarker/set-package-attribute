@@ -7,43 +7,52 @@ Description
 
 In order to run a module inside a package as a script and have explicit
 relative imports work, the `__package__` attribute of the module should be set.
-Importing this module from a script sets the `__package__` attribute of the
-module `__main__`.  This module is intended to be imported by modules which
-might be run as scripts and which use explicit relative imports or need to
-import other modules which do.
+Importing this module from a script and running its `init` function sets the
+`__package__` attribute of the module `__main__`.  This package is intended to
+be used in modules which might be run as scripts and which either use explicit
+relative imports or else need to import other modules from within the same
+package which do.
 
-To use the module, just import it before any of the non-system files, inside
-any module that you want to possibly run as a script.  The import should be
-inside a guard conditional, to only run when the module is executed as a
-script::
+To use the module just import it before any of the non-system files, inside any
+module that you might want to run as a script, and call its `init` function.
+These commands should be inside a guard conditional so that they only run
+when the module is executed as a script::
 
-   if __name__ == "__main__": import set_package_attribute
+   if __name__ == "__main__":
+       import set_package_attribute
+       set_package_attribute.init()
 
-Nothing else is required.  This module needs to be imported **before** any
-explicit relative imports, and before importing any modules from the same
-package which use such imports.  Any previously-set `__package__` attributes
-(other than `None`) will be left unchanged.
+Nothing else is required.  The `init` function must be called **before** any
+within-package explicit relative imports, and before importing any modules from
+within the same package which themselves use such imports.  Any previously-set
+`__package__` attribute (other than `None`) will be left unchanged.
 
-.. note::
+Some notes:
 
-    Internally this module also needs to import the package directory
-    containing the script module under its full package-qualified name.  A
-    side-effect of this is that any `__init__.py` files in the package path
-    down to the script (from the top package level) will be executed.  This
-    could give unexpected results compared to running the script outside the
-    package, depending on how `__init__.py` files are used in a given package.
-    The effect is essentially the same as if the script file had been imported
-    from another module using its full, package-qualified module name.
+* Internally, this module also needs to import the package directory
+  containing the script module (under its full package-qualified name).  A
+  side-effect of this is that any `__init__.py` files in the package path down
+  to the script (from the top package level) will be executed.  Similarly, any
+  modules you import within the package will cause the init files down to them
+  to be run.  This could give unexpected results compared to running the script
+  outside the package, depending on how `__init__.py` files are used in a given
+  package.  The effect is essentially the same as if the script file had been
+  imported using its full, package-qualified module name.
 
-.. note::
+* The basic mechanism will still work if the guard conditional is left off.
+  But a problem would occur if an external script in a *different* package were
+  to explicitly or implicity import a module which itself imports
+  `set_package_attribute`.  This includes importing it as part of its full
+  package, say if the init module imports it.  This would have the side-effect
+  of setting the package attribute of the `__main__` module, which in this case
+  is the module for the external script.  Often this would not be a problem,
+  since it will be correctly set, but it might result in unexpected behavior
+  that could be difficult to trace.
 
-    If the guard conditional `if` is left off the import it will still work.
-    The problem would be when an external script, also in a package, explicitly
-    or implicity imports module which imports `set_package_attribute`.  (That
-    includes importing it as part of its full package.)  This would have the
-    side-effect of setting the package attribute of the `__main__` module for
-    the external script, which might result in unexpected behavior that could
-    be difficult to trace.
+* This only works for intra-package imports, i.e., a module importing another
+  module from within the same package (using explicit relative imports within
+  that package).  You still cannot import a module from inside a *different*
+  package and have its intra-package explicit relative imports work.
 
 Another use of this package is that it allows explicit relative imports to be
 used for intra-package imports in the main module of a Python application
@@ -54,7 +63,7 @@ these imports should always be absolute imports.  That is, without the
 `__package__` attribute being set such modules should generally only import
 intra-package modules by their full, package-qualified names).  The guard
 conditional is not required in this case, assuming the application will always
-be run from the entry point rather than imported.
+be run from the entry point rather than imported from another Python file.
 
 Installation
 ------------
@@ -66,19 +75,22 @@ The simplest way to install is to use pip:
    pip install set-package-attribute
 
 The package can also be installed by cloning it and running its `setup.py` file
-in the usual way.  The GitHub URL is `https://github.com/abarker/pytest-helper
-<https://github.com/abarker/set-package-attribute>`_.
+in the usual way.  The clone command is:
 
-The package currently consists of a single module, which can also simply be
+.. code:: bash
+
+   git clone https://github.com/abarker/set-package-attribute
+
+The package currently consists of a single module, which could also simply be
 copied to somewhere in the Python path (in order to avoid adding a dependency).
 
 Further details
 ---------------
 
-On initial import this module searches for the module `__main__` in
+When `init` is run this module searches for the module `__main__` in
 `sys.modules`.  If that module is not found then nothing is done.  If
 `__main__` is found then the `__package__` attribute for the `__main__` module
-is computed by going up its directory tree from its source file, looking for
+is computed by going up the directory tree from its source file, looking for
 `__init__.py` files.  The `__package__` attribute is then set in the `__main__`
 module's namespace.  Only the `__main__` module is ever modified.  If there is
 already a `__package__` attribute in the namespace of `__main__` then nothing
@@ -96,8 +108,8 @@ fully-qualified name.  An entry for the `__main__` module is also added to
 
 .. note::
 
-    An alternative approach would be to always execute scripts inside packages
-    with the `-m` flag set.  For example, to execute a script `module_name.py`,
+    An alternative approach is to always execute scripts inside packages with
+    the `-m` flag set.  For example, to execute a script `module_name.py`,
     which is in a subdirectory inside a package `pkg_toplevel`, you would use:
 
     .. code:: bash
@@ -122,31 +134,13 @@ fully-qualified name.  An entry for the `__main__` module is also added to
 ..  Copyright (c) 2015 by Allen Barker.
     License: MIT, see LICENSE for more details.
 
-Main function (called on import initialization)
-------------------------------------------------
+Functions
+---------
 """
 
-# TODO: delete this comment below after reviewing.......
-# TODO: we ONLY want to run if we are invoked *as* __main__, not any time when
-# imported.  Maybe when package that imports imports, but better *not* to.
-# Otherwise, we *always* set the package for __main__ any time thing is run as
-# a script -- even when it is *normally* imported by a script which import the
-# regular package.  So something outside the package of the file with the
-# import is having its __package__ attribute set and its __init__ files run!
-# Not good!  At WORST you could pass __name__ to the init function, and be
-# required to init.  That would be easy.  Is there a way to keep the regular
-# import thing?
-#
-# Summary: we don't want modify __main__, with the side effects of __init__
-# runs too, when package imported as a package.  Only when run as script
-# itself.
-#
-# Alternative: use a guard clause, if __name__ == "__main__": import
-# set_package_attribute
-
-# TODO: maybe note describing explicit relative imports, i.e., imports with a
-# leading period in them.  (Does that cover all cases?)
-# TODO: maybe give explicit clone command rather than just address...
+# Maybe in the future: Consider an optional function to call just after import
+# to remove the "__main__" script's directory from sys.path, to avoid the kinds
+# of problems that can cause.
 
 from __future__ import print_function, division, absolute_import
 import os
@@ -159,57 +153,49 @@ def set_package_attribute():
     main_found = True
     try:
         main_module = sys.modules["__main__"]
-        print("__main__ found!!!!!!!!!!!!")
     except KeyError:
         main_found = False
-        print("no __main__ found!!!!!!!!!!!!")
 
     # Do nothing unless the program was started from a script.
     if main_found and main_module.__package__ is None:
 
         importing_file = main_module.__file__
-        print("importing file is", importing_file)
         dirname, filename = os.path.split(
                                os.path.realpath(os.path.abspath(importing_file)))
         filename = os.path.splitext(filename)[0]
-        print("dirname and filename are", dirname, filename)
-        parent_dirs = [] # A reverse list of package name parts to build up.
+        parent_dirs = [] # A reversed list of package name parts, to build up.
 
-        # Go up the dirname tree to find the top-level package dirname.
+        # Go up the directory tree to find the top-level package directory.
         while os.path.exists(os.path.join(dirname, "__init__.py")):
             dirname, name = os.path.split(dirname) 
             parent_dirs.append(name)
 
-        if parent_dirs: # Do nothing if no __init__.py file was found.
+        if parent_dirs: # Does nothing if no __init__.py file was found.
 
-            # Get the package name and set the __package__ variable.
-            # Note: the package name does not include the name of the module itself.
-            full_package_name = ".".join(reversed(parent_dirs))
-            main_module.__package__ = full_package_name
+            # Build the name of the subpackage the "__main__" module is in, and set
+            # the __package__ variable to it.
+            # Note: the subpackage name does not include the name of the module itself.
+            full_subpackage_name = ".".join(reversed(parent_dirs))
+            main_module.__package__ = full_subpackage_name
 
-            # Now do the actual import of the full package.
-            print("\nfull_package_name is", full_package_name)
-            # The script module is run *twice* if below line is uncommented!
-            #full_package_name += "." + filename # LEAVE COMMENTED OUT
+            # Now do the actual import of the subpackage.
+            # Note: the script module runs *twice* if the below line is uncommented!
+            #full_subpackage_name += "." + filename # LEAVE COMMENTED OUT
             try:
-                package_module = __import__(full_package_name)
+                subpackage_module = __import__(full_subpackage_name)
             except ImportError:
                 # Failure; insert dirname in sys.path, then try the import again.
                 sys.path.insert(1, dirname) # Use 1 instead of 0; 0 is script's dir.
-                package_module = __import__(full_package_name)
+                subpackage_module = __import__(full_subpackage_name)
                 del sys.path[1] # Remove the added path; no longer needed.
-                print("\ndebug: Had to add to sys.path and remove dirname", dirname, "\n")
 
-            assert full_package_name in sys.modules # True
-            # TODO: I added this part... seems like it sets the right alias to the module...
-            full_package_name += "." + str(filename) # Add the filename part to the end.
-            assert full_package_name not in sys.modules # True
-            sys.modules[full_package_name] = main_module
+            #assert full_subpackage_name in sys.modules # True
+            full_module_name = full_subpackage_name + "." + filename
+            #assert full_module_name not in sys.modules # True
+            sys.modules[full_module_name] = main_module
+            #assert full_module_name in sys.modules # True
 
-            # Add the package's module to sys.modules.
-            # TODO: commenting this out seems to fix problem with bottom-level import tests...
-            #sys.modules[full_package_name] = package_module
-            #print("set_package_attribute set sys.modules to have module", full_package_name)
-
-set_package_attribute()
+def init():
+    """Run the `set_package_attribute` function."""
+    set_package_attribute()
 

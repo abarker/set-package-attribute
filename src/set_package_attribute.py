@@ -15,7 +15,7 @@ package which do.
 
 To use the package just import it before any of the non-system files, inside any
 module that you might want to run as a script, and call its `init` function.
-These statements should be inside a guard conditional so that they only run
+These statements should be inside a guard conditional, so that they only run
 when the module is executed as a script::
 
    if __name__ == "__main__":

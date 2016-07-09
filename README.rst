@@ -4,8 +4,8 @@
 set-package-attribute
 =====================
 
-A package which sets the `__package__` attribute of any script which imports
-it, so that explicit relative imports work.
+Automatically sets the `__package__` attribute of any script which imports it
+and calls `set_package_attribute.init`, so that explicit relative imports work.
 
 For full documentation, see https://abarker.github.io/set-package-attribute.
 

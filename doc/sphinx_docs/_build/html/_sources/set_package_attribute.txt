@@ -1,0 +1,22 @@
+set_package_attribute package
+=============================
+
+Submodules
+----------
+
+set_package_attribute.set_package_attribute module
+--------------------------------------------------
+
+.. automodule:: set_package_attribute.set_package_attribute
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: set_package_attribute
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,0 +1,34 @@
+Metadata-Version: 1.1
+Name: set-package-attribute
+Version: 0.1.0
+Summary: Automatically set the __PACKAGE__ attribute of a script.
+Home-page: https://github.com/abarker/set-package-attribute
+Author: Allen Barker
+Author-email: Allen.L.Barker@gmail.com
+License: MIT
+Description: set-package-attribute
+        =====================
+        
+        A package which sets the `__package__` attribute of any script which imports
+        it, so that explicit relative imports work.
+        
+        For full documentation, see ....
+        
+        
+Keywords: module,package,import,relative import,script
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Utilities

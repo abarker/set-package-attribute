@@ -9,7 +9,7 @@ and calls `set_package_attribute.init`, so that explicit relative imports work.
 
 For full documentation, see https://abarker.github.io/set-package-attribute.
 
-Also available on PyPI at: <coming soon>
+Also available on PyPI for installation with pip.
 
 Brief usage summary
 ===================

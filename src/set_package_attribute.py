@@ -7,15 +7,15 @@ Description
 
 In order to run a module inside a package as a script and have explicit
 relative imports work, the `__package__` attribute of the module should be set.
-Importing this module from a script and running its `init` function sets the
-`__package__` attribute of the module `__main__`.  This package is intended to
+Importing `set_package_attribute` from a script and running its `init` function
+sets the `__package__` attribute of the module `__main__`.  This is intended to
 be used in modules which might be run as scripts and which either use explicit
 relative imports or else need to import other modules from within the same
 package which do.
 
-To use the module just import it before any of the non-system files, inside any
+To use the package just import it before any of the non-system files, inside any
 module that you might want to run as a script, and call its `init` function.
-These commands should be inside a guard conditional so that they only run
+These statements should be inside a guard conditional so that they only run
 when the module is executed as a script::
 
    if __name__ == "__main__":

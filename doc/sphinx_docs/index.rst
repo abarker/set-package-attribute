@@ -6,6 +6,8 @@
 set-package-attribute
 =====================
 
+.. default-role:: code
+
 Allow modules which are located inside packages to be run as scripts, even when
 explicit relative imports are used.
 

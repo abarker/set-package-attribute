@@ -146,7 +146,7 @@ from __future__ import print_function, division, absolute_import
 import os
 import sys
 
-def set_package_attribute():
+def set_package_attribute(mod_path=False):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set."""
     # Get the module named __main__ from sys.modules.
@@ -160,12 +160,13 @@ def set_package_attribute():
     if main_found and main_module.__package__ is None:
 
         importing_file = main_module.__file__
-        dirname, filename = os.path.split(
+        script_dirname, script_filename = os.path.split(
                                os.path.realpath(os.path.abspath(importing_file)))
-        filename = os.path.splitext(filename)[0]
+        filename = os.path.splitext(script_filename)[0]
         parent_dirs = [] # A reversed list of package name parts, to build up.
 
         # Go up the directory tree to find the top-level package directory.
+        dirname = script_dirname
         while os.path.exists(os.path.join(dirname, "__init__.py")):
             dirname, name = os.path.split(dirname) 
             parent_dirs.append(name)
@@ -195,7 +196,17 @@ def set_package_attribute():
             sys.modules[full_module_name] = main_module
             #assert full_module_name in sys.modules # True
 
-def init():
-    """Run the `set_package_attribute` function."""
-    set_package_attribute()
+            #assert os.path.abspath(sys.path[0]) == script_dirname # True
+            if mod_path: del sys.path[0]
+
+def init(mod_path=False):
+    """Run the `set_package_attribute` function.
+    
+    If `mod_path` is true then whenever the `__package__` attribute is set
+    the first element of `sys.path` (the current
+    directory of the script) is also deleted from the path list.  This avoids some of the
+    problems with name shadowing that can arise from directories inside
+    packages being added to the package search path.  It is not guaranteed not
+    to create other problems, but it works in test cases."""
+    set_package_attribute(mod_path=mod_path)
 

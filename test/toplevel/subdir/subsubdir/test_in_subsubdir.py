@@ -8,7 +8,7 @@ Test set_package_attribute, from the subsubdir level.
 from __future__ import print_function, division, absolute_import
 if __name__ == "__main__":
     import set_package_attribute
-    set_package_attribute.init()
+    set_package_attribute.init(mod_path=True)
 
 # Import from top level.
 
@@ -46,12 +46,17 @@ assert subsubdir_imp_1.value is value
 
 # Below line works as a script but causes double import of module with above.
 # The script's dir is placed on sys.path, where it is found and re-imported
-# with a different name. NOTE it is not just at sys.path[0], either...  two
-# copies get added.  (Python 3 removed implicit relative imports, so it isn't
-# that.)  The import FAILS when this module is imported as a regular package in
-# Python 3, though, because it is not on sys.path and no implicit relative.
-#from subsubdir_module import value
-#print(sys.path)
+# with a different name.  The import FAILS when this module is imported as a
+# regular package in Python 3, though, because it is not on sys.path and no
+# implicit relative imports are allowed.
+try:
+    from subsubdir_module import value
+except ImportError:
+    # As ordinary package, fail since absolue_import is used (from future for Py2).
+    # When run as script, fail since mod_path=True will remove the script's dir.
+    assert True
+else:
+    assert not "Import still worked after removing sys.path[0], is dir on path elsewhere?"
 
 # When run as a script, make sure the package-qualified name is the same
 # module as __main__.

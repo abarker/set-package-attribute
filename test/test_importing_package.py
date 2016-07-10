@@ -9,6 +9,7 @@ scripts.  This test is to make sure they still import OK as package modules.
 
 from __future__ import print_function, division, absolute_import
 import sys
+
 import toplevel # The package being tested, imported as a package.
 
 # Import from top level.

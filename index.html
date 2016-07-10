@@ -59,7 +59,7 @@ relative imports or else need to import other modules from within the same
 package which do.</p>
 <p>To use the package just import it before any of the non-system files, inside any
 module that you might want to run as a script, and call its <tt class="code docutils literal"><span class="pre">init</span></tt> function.
-These statements should be inside a guard conditional so that they only run
+These statements should be inside a guard conditional, so that they only run
 when the module is executed as a script:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">set_package_attribute</span>
@@ -70,6 +70,13 @@ when the module is executed as a script:</p>
 within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
 <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute (other than <tt class="code docutils literal"><span class="pre">None</span></tt>) will be left unchanged.</p>
+<p>The <tt class="code docutils literal"><span class="pre">init</span></tt> function takes one optional boolean parameter <tt class="code docutils literal"><span class="pre">mod_path</span></tt>.  If it is
+set true then whenever <tt class="code docutils literal"><span class="pre">__package__</span></tt> is set the first element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt> is
+also deleted.  This avoids some of the aliasing problems that can arise from
+directories inside packages being automatically added to the package search
+path when scripts inside the package are run.  It is not guaranteed not to
+create other problems, but it works in test cases.  The default is false, i.e.,
+the path is not modified.</p>
 <p>Some notes:</p>
 <ul class="simple">
 <li>Internally, this module also needs to import the package directory
@@ -166,13 +173,16 @@ attribute to handle the situation.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="set_package_attribute.init">
-<tt class="descclassname">set_package_attribute.</tt><tt class="descname">init</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/set_package_attribute.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#set_package_attribute.init" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">set_package_attribute.</tt><tt class="descname">init</tt><big>(</big><em>mod_path=False</em><big>)</big><a class="reference internal" href="_modules/set_package_attribute.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#set_package_attribute.init" title="Permalink to this definition">¶</a></dt>
 <dd><p>Run the <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> function.</p>
+<p>If <tt class="code docutils literal"><span class="pre">mod_path</span></tt> is true then whenever the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute is set
+the first element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt> (the current
+directory of the script) is also deleted from the path list.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="set_package_attribute.set_package_attribute">
-<tt class="descclassname">set_package_attribute.</tt><tt class="descname">set_package_attribute</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/set_package_attribute.html#set_package_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#set_package_attribute.set_package_attribute" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">set_package_attribute.</tt><tt class="descname">set_package_attribute</tt><big>(</big><em>mod_path=False</em><big>)</big><a class="reference internal" href="_modules/set_package_attribute.html#set_package_attribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#set_package_attribute.set_package_attribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the module <tt class="code docutils literal"><span class="pre">__main__</span></tt> if it is not
 already set.</p>
 </dd></dl>

@@ -64,7 +64,7 @@
 
 <span class="sd">To use the package just import it before any of the non-system files, inside any</span>
 <span class="sd">module that you might want to run as a script, and call its `init` function.</span>
-<span class="sd">These statements should be inside a guard conditional so that they only run</span>
+<span class="sd">These statements should be inside a guard conditional, so that they only run</span>
 <span class="sd">when the module is executed as a script::</span>
 
 <span class="sd">   if __name__ == &quot;__main__&quot;:</span>
@@ -75,6 +75,14 @@
 <span class="sd">within-package explicit relative imports, and before importing any modules from</span>
 <span class="sd">within the same package which themselves use such imports.  Any previously-set</span>
 <span class="sd">`__package__` attribute (other than `None`) will be left unchanged.</span>
+
+<span class="sd">The `init` function takes one optional boolean parameter `mod_path`.  If it is</span>
+<span class="sd">set true then whenever `__package__` is set the first element of `sys.path` is</span>
+<span class="sd">also deleted.  This avoids some of the aliasing problems that can arise from</span>
+<span class="sd">directories inside packages being automatically added to the package search</span>
+<span class="sd">path when scripts inside the package are run.  It is not guaranteed not to</span>
+<span class="sd">create other problems, but it works in test cases.  The default is false, i.e.,</span>
+<span class="sd">the path is not modified.</span>
 
 <span class="sd">Some notes:</span>
 
@@ -187,15 +195,11 @@
 <span class="sd">---------</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c"># Maybe in the future: Consider an optional function to call just after import</span>
-<span class="c"># to remove the &quot;__main__&quot; script&#39;s directory from sys.path, to avoid the kinds</span>
-<span class="c"># of problems that can cause.</span>
-
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<div class="viewcode-block" id="set_package_attribute"><a class="viewcode-back" href="../index.html#set_package_attribute.set_package_attribute">[docs]</a><span class="k">def</span> <span class="nf">set_package_attribute</span><span class="p">():</span>
+<div class="viewcode-block" id="set_package_attribute"><a class="viewcode-back" href="../index.html#set_package_attribute.set_package_attribute">[docs]</a><span class="k">def</span> <span class="nf">set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.&quot;&quot;&quot;</span>
     <span class="c"># Get the module named __main__ from sys.modules.</span>
@@ -209,12 +213,13 @@
     <span class="k">if</span> <span class="n">main_found</span> <span class="ow">and</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__package__</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
 
         <span class="n">importing_file</span> <span class="o">=</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__file__</span>
-        <span class="n">dirname</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+        <span class="n">script_dirname</span><span class="p">,</span> <span class="n">script_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
                                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">importing_file</span><span class="p">)))</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">parent_dirs</span> <span class="o">=</span> <span class="p">[]</span> <span class="c"># A reversed list of package name parts, to build up.</span>
 
         <span class="c"># Go up the directory tree to find the top-level package directory.</span>
+        <span class="n">dirname</span> <span class="o">=</span> <span class="n">script_dirname</span>
         <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s">&quot;__init__.py&quot;</span><span class="p">)):</span>
             <span class="n">dirname</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span> 
             <span class="n">parent_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
@@ -228,8 +233,8 @@
             <span class="n">main_module</span><span class="o">.</span><span class="n">__package__</span> <span class="o">=</span> <span class="n">full_subpackage_name</span>
 
             <span class="c"># Now do the actual import of the subpackage.</span>
-            <span class="c"># Note: the script module runs *twice* if the below line is uncommented!</span>
-            <span class="c">#full_subpackage_name += &quot;.&quot; + filename # LEAVE COMMENTED OUT</span>
+            <span class="c"># Note: the script&#39;s module loads and initializes *twice* if you import</span>
+            <span class="c"># full_module_name rather than subpackage_module.</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">subpackage_module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">full_subpackage_name</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -243,10 +248,17 @@
             <span class="c">#assert full_module_name not in sys.modules # True</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">full_module_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_module</span>
             <span class="c">#assert full_module_name in sys.modules # True</span>
+
+            <span class="c">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
+            <span class="k">if</span> <span class="n">mod_path</span><span class="p">:</span> <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 </div>
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
-    <span class="sd">&quot;&quot;&quot;Run the `set_package_attribute` function.&quot;&quot;&quot;</span>
-    <span class="n">set_package_attribute</span><span class="p">()</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run the `set_package_attribute` function.</span>
+<span class="sd">    </span>
+<span class="sd">    If `mod_path` is true then whenever the `__package__` attribute is set</span>
+<span class="sd">    the first element of `sys.path` (the current</span>
+<span class="sd">    directory of the script) is also deleted from the path list.&quot;&quot;&quot;</span>
+    <span class="n">set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="n">mod_path</span><span class="p">)</span>
 </pre></div></div>
 
           </div>

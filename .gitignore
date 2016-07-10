@@ -7,7 +7,7 @@ __pycache__/
 *.py[cod]
 
 # Sphinx documentation
-_build
+#_build # Cannot ignore this the way the gh-pages are currently being built/deployed.
 
 # Installer logs
 pip-log.txt

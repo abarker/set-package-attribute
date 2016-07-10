@@ -54,11 +54,11 @@ explicit relative imports are used.</p>
 relative imports work, the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the module should be set.
 Importing <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> from a script and running its <tt class="code docutils literal"><span class="pre">init</span></tt> function
 sets the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the module <tt class="code docutils literal"><span class="pre">__main__</span></tt>.  This is intended to
-be used in modules which might be run as scripts and which either use explicit
-relative imports or else need to import other modules from within the same
+be used in modules which might be run as scripts and which either use
+intra-package imports or else need to import other modules from within the same
 package which do.</p>
 <p>To use the package just import it before any of the non-system files, inside any
-module that you might want to run as a script, and call its <tt class="code docutils literal"><span class="pre">init</span></tt> function.
+module that you might want to run as a script, and call the <tt class="code docutils literal"><span class="pre">init</span></tt> function.
 These statements should be inside a guard conditional, so that they only run
 when the module is executed as a script:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
@@ -70,6 +70,10 @@ when the module is executed as a script:</p>
 within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
 <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute (other than <tt class="code docutils literal"><span class="pre">None</span></tt>) will be left unchanged.</p>
+<p>To even use absolute intra-package imports within a script the package itself
+needs to be found on Python&#8217;s package search path.  This package also takes
+care of that, temporarily adding the directory containing the package root to
+<tt class="code docutils literal"><span class="pre">sys.path</span></tt> if necessary, and then deleting it again.</p>
 <p>The <tt class="code docutils literal"><span class="pre">init</span></tt> function takes one optional boolean parameter <tt class="code docutils literal"><span class="pre">mod_path</span></tt>.  If it is
 set true then whenever <tt class="code docutils literal"><span class="pre">__package__</span></tt> is set the first element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt> is
 also deleted.  This avoids some of the aliasing problems that can arise from

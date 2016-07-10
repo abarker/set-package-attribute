@@ -1,0 +1,56 @@
+Metadata-Version: 1.1
+Name: set-package-attribute
+Version: 0.1.0
+Summary: Automatically set the __package__ attribute of a script.
+Home-page: https://github.com/abarker/set-package-attribute
+Author: Allen Barker
+Author-email: Allen.L.Barker@gmail.com
+License: MIT
+Description: 
+        .. default-role:: code
+        
+        set-package-attribute
+        =====================
+        
+        Automatically sets the `__package__` attribute of any script which imports it
+        and calls `set_package_attribute.init()`.  This is usually done so that
+        intra-package explicit relative imports work for scripts inside packages.
+        
+        For full documentation, see https://abarker.github.io/set-package-attribute.
+        
+        Also available on PyPI for installation with pip.
+        
+        Brief usage summary
+        ===================
+        
+        To use the package just import it before any of the non-system files, inside any
+        module that you might want to run as a script, and call the `init` function.
+        These statements should be inside a guard conditional, so that they only run
+        when the module is executed as a script::
+        
+           if __name__ == "__main__":
+               import set_package_attribute
+               set_package_attribute.init()
+        
+        Nothing else is required.  The `init` function must be called **before** any
+        within-package explicit relative imports, and before importing any modules from
+        within the same package which themselves use such imports.  
+        
+        
+Keywords: module,package,import,relative import,script
+Platform: UNKNOWN
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 2.7
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: Implementation :: CPython
+Classifier: Programming Language :: Python :: Implementation :: PyPy
+Classifier: Topic :: Utilities

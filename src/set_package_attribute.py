@@ -150,7 +150,7 @@ from __future__ import print_function, division, absolute_import
 import os
 import sys
 
-def set_package_attribute(mod_path=False):
+def _set_package_attribute(mod_path=False):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set."""
     # Get the module named __main__ from sys.modules.
@@ -204,10 +204,11 @@ def set_package_attribute(mod_path=False):
             if mod_path: del sys.path[0]
 
 def init(mod_path=False):
-    """Run the `set_package_attribute` function.
-    
+    """Set the `__package__` attribute of the module `__main__` if it is not
+    already set.
+
     If `mod_path` is true then whenever the `__package__` attribute is set
     the first element of `sys.path` (the current
     directory of the script) is also deleted from the path list."""
-    set_package_attribute(mod_path=mod_path)
+    _set_package_attribute(mod_path=mod_path)
 

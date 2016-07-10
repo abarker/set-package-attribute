@@ -5,7 +5,6 @@ A setuptools-based setup module.
 
 See:
    https://packaging.python.org/en/latest/distributing.html
-   https://github.com/pypa/sampleproject
 
 Docs on the setup function kwargs:
    https://packaging.python.org/distributing/#setup-args
@@ -26,7 +25,7 @@ with codecs.open(os.path.join(current_dir, "README.rst"), encoding="utf-8") as f
 setup(
     name="set-package-attribute",
     version="0.1.0", # major version, minor version, patch (see PEP440)
-    description="Automatically set the __PACKAGE__ attribute of a script.",
+    description="Automatically set the __package__ attribute of a script.",
     keywords=["module", "package", "import", "relative import", "script"],
     install_requires=["pytest>=2.0"],
     url="https://github.com/abarker/set-package-attribute",

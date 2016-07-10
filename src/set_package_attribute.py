@@ -184,8 +184,8 @@ def set_package_attribute(mod_path=False):
             main_module.__package__ = full_subpackage_name
 
             # Now do the actual import of the subpackage.
-            # Note: the script module runs *twice* if the below line is uncommented!
-            #full_subpackage_name += "." + filename # LEAVE COMMENTED OUT
+            # Note: the script's module loads and initializes *twice* if you import
+            # full_module_name rather than subpackage_module.
             try:
                 subpackage_module = __import__(full_subpackage_name)
             except ImportError:

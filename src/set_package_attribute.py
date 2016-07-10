@@ -9,12 +9,12 @@ In order to run a module inside a package as a script and have explicit
 relative imports work, the `__package__` attribute of the module should be set.
 Importing `set_package_attribute` from a script and running its `init` function
 sets the `__package__` attribute of the module `__main__`.  This is intended to
-be used in modules which might be run as scripts and which either use explicit
-relative imports or else need to import other modules from within the same
+be used in modules which might be run as scripts and which either use
+intra-package imports or else need to import other modules from within the same
 package which do.
 
 To use the package just import it before any of the non-system files, inside any
-module that you might want to run as a script, and call its `init` function.
+module that you might want to run as a script, and call the `init` function.
 These statements should be inside a guard conditional, so that they only run
 when the module is executed as a script::
 
@@ -26,6 +26,11 @@ Nothing else is required.  The `init` function must be called **before** any
 within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
 `__package__` attribute (other than `None`) will be left unchanged.
+
+To even use absolute intra-package imports within a script the package itself
+needs to be found on Python's package search path.  This package also takes
+care of that, temporarily adding the directory containing the package root to
+`sys.path` if necessary, and then deleting it again.
 
 The `init` function takes one optional boolean parameter `mod_path`.  If it is
 set true then whenever `__package__` is set the first element of `sys.path` is

@@ -58,12 +58,12 @@
 <span class="sd">relative imports work, the `__package__` attribute of the module should be set.</span>
 <span class="sd">Importing `set_package_attribute` from a script and running its `init` function</span>
 <span class="sd">sets the `__package__` attribute of the module `__main__`.  This is intended to</span>
-<span class="sd">be used in modules which might be run as scripts and which either use explicit</span>
-<span class="sd">relative imports or else need to import other modules from within the same</span>
+<span class="sd">be used in modules which might be run as scripts and which either use</span>
+<span class="sd">intra-package imports or else need to import other modules from within the same</span>
 <span class="sd">package which do.</span>
 
 <span class="sd">To use the package just import it before any of the non-system files, inside any</span>
-<span class="sd">module that you might want to run as a script, and call its `init` function.</span>
+<span class="sd">module that you might want to run as a script, and call the `init` function.</span>
 <span class="sd">These statements should be inside a guard conditional, so that they only run</span>
 <span class="sd">when the module is executed as a script::</span>
 
@@ -75,6 +75,11 @@
 <span class="sd">within-package explicit relative imports, and before importing any modules from</span>
 <span class="sd">within the same package which themselves use such imports.  Any previously-set</span>
 <span class="sd">`__package__` attribute (other than `None`) will be left unchanged.</span>
+
+<span class="sd">To even use absolute intra-package imports within a script the package itself</span>
+<span class="sd">needs to be found on Python&#39;s package search path.  This package also takes</span>
+<span class="sd">care of that, temporarily adding the directory containing the package root to</span>
+<span class="sd">`sys.path` if necessary, and then deleting it again.</span>
 
 <span class="sd">The `init` function takes one optional boolean parameter `mod_path`.  If it is</span>
 <span class="sd">set true then whenever `__package__` is set the first element of `sys.path` is</span>

@@ -29,10 +29,11 @@ within the same package which themselves use such imports.  Any previously-set
 
 The `init` function takes one optional boolean parameter `mod_path`.  If it is
 set true then whenever `__package__` is set the first element of `sys.path` is
-also deleted.  This avoids some of the problems with name shadowing that can
-arise from directories inside packages being added to the package search path.
-It is not guaranteed not to create other problems, but it works in test cases.
-The default is false, i.e., the path is not modified.
+also deleted.  This avoids some of the aliasing problems that can arise from
+directories inside packages being automatically added to the package search
+path when scripts inside the package are run.  It is not guaranteed not to
+create other problems, but it works in test cases.  The default is false, i.e.,
+the path is not modified.
 
 Some notes:
 

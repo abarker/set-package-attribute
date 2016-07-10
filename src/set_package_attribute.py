@@ -95,7 +95,7 @@ in the usual way.  The clone command is:
    git clone https://github.com/abarker/set-package-attribute
 
 The package currently consists of a single module, which could also simply be
-copied to somewhere in the Python path (in order to avoid adding a dependency).
+copied to somewhere in the Python path (to avoid adding a dependency).
 
 Further details
 ---------------

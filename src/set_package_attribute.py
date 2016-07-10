@@ -27,6 +27,13 @@ within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
 `__package__` attribute (other than `None`) will be left unchanged.
 
+The `init` function takes one optional boolean parameter `mod_path`.  If it is
+set true then whenever `__package__` is set the first element of `sys.path` is
+also deleted.  This avoids some of the problems with name shadowing that can
+arise from directories inside packages being added to the package search path.
+It is not guaranteed not to create other problems, but it works in test cases.
+The default is false, i.e., the path is not modified.
+
 Some notes:
 
 * Internally, this module also needs to import the package directory
@@ -138,10 +145,6 @@ Functions
 ---------
 """
 
-# Maybe in the future: Consider an optional function to call just after import
-# to remove the "__main__" script's directory from sys.path, to avoid the kinds
-# of problems that can cause.
-
 from __future__ import print_function, division, absolute_import
 import os
 import sys
@@ -204,9 +207,6 @@ def init(mod_path=False):
     
     If `mod_path` is true then whenever the `__package__` attribute is set
     the first element of `sys.path` (the current
-    directory of the script) is also deleted from the path list.  This avoids some of the
-    problems with name shadowing that can arise from directories inside
-    packages being added to the package search path.  It is not guaranteed not
-    to create other problems, but it works in test cases."""
+    directory of the script) is also deleted from the path list."""
     set_package_attribute(mod_path=mod_path)
 

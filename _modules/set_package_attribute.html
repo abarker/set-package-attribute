@@ -199,7 +199,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<div class="viewcode-block" id="set_package_attribute"><a class="viewcode-back" href="../index.html#set_package_attribute.set_package_attribute">[docs]</a><span class="k">def</span> <span class="nf">set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.&quot;&quot;&quot;</span>
     <span class="c"># Get the module named __main__ from sys.modules.</span>
@@ -251,14 +251,15 @@
 
             <span class="c">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
             <span class="k">if</span> <span class="n">mod_path</span><span class="p">:</span> <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</div>
+
 <div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Run the `set_package_attribute` function.</span>
-<span class="sd">    </span>
+    <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
+<span class="sd">    already set.</span>
+
 <span class="sd">    If `mod_path` is true then whenever the `__package__` attribute is set</span>
 <span class="sd">    the first element of `sys.path` (the current</span>
 <span class="sd">    directory of the script) is also deleted from the path list.&quot;&quot;&quot;</span>
-    <span class="n">set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="n">mod_path</span><span class="p">)</span>
+    <span class="n">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="n">mod_path</span><span class="p">)</span>
 </pre></div></div>
 
           </div>

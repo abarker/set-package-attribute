@@ -190,14 +190,14 @@ def _set_package_attribute(mod_path=False):
 
             # Now do the actual import of the subpackage.
             # Note: the script's module loads and initializes *twice* if you import
-            # full_module_name rather than subpackage_module.
-            try:
-                subpackage_module = __import__(full_subpackage_name)
-            except ImportError:
-                # Failure; insert dirname in sys.path, then try the import again.
-                sys.path.insert(1, dirname) # Use 1 instead of 0; 0 is script's dir.
-                subpackage_module = __import__(full_subpackage_name)
-                del sys.path[1] # Remove the added path; no longer needed.
+            # full_module_name rather than subpackage_module!
+
+            # Normally you insert to sys.path as position one, leaving the script's
+            # directory in position zero.  Here, though, it is temporary and we want
+            # to avoid name shadowing so we insert at position zero.
+            sys.path.insert(0, dirname)
+            subpackage_module = __import__(full_subpackage_name)
+            del sys.path[0] # Remove the added path; no longer needed.
 
             #assert full_subpackage_name in sys.modules # True
             full_module_name = full_subpackage_name + "." + filename

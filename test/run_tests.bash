@@ -17,5 +17,8 @@ do
    $p ./toplevel/subdir/test_in_subdir.py
    echo
    $p ./toplevel/subdir/subsubdir/test_in_subsubdir.py
+   
+   echo
+   $p ./shadow_package/shadow_package.py
 done
 

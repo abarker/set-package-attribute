@@ -24,7 +24,7 @@ with codecs.open(os.path.join(current_dir, "README.rst"), encoding="utf-8") as f
 
 setup(
     name="set-package-attribute",
-    version="0.1.0", # major version, minor version, patch (see PEP440)
+    version="0.1.1", # major version, minor version, patch (see PEP440)
     description="Automatically set the __package__ attribute of a script.",
     keywords=["module", "package", "import", "relative import", "script"],
     install_requires=["pytest>=2.0"],

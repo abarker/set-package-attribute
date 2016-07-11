@@ -239,14 +239,14 @@
 
             <span class="c"># Now do the actual import of the subpackage.</span>
             <span class="c"># Note: the script&#39;s module loads and initializes *twice* if you import</span>
-            <span class="c"># full_module_name rather than subpackage_module.</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">subpackage_module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">full_subpackage_name</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-                <span class="c"># Failure; insert dirname in sys.path, then try the import again.</span>
-                <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dirname</span><span class="p">)</span> <span class="c"># Use 1 instead of 0; 0 is script&#39;s dir.</span>
-                <span class="n">subpackage_module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">full_subpackage_name</span><span class="p">)</span>
-                <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="c"># Remove the added path; no longer needed.</span>
+            <span class="c"># full_module_name rather than subpackage_module!</span>
+
+            <span class="c"># Normally you insert to sys.path as position one, leaving the script&#39;s</span>
+            <span class="c"># directory in position zero.  Here, though, it is temporary and we want</span>
+            <span class="c"># to avoid name shadowing so we insert at position zero.</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dirname</span><span class="p">)</span>
+            <span class="n">subpackage_module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">full_subpackage_name</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># Remove the added path; no longer needed.</span>
 
             <span class="c">#assert full_subpackage_name in sys.modules # True</span>
             <span class="n">full_module_name</span> <span class="o">=</span> <span class="n">full_subpackage_name</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">filename</span>

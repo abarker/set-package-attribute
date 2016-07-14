@@ -62,10 +62,10 @@
 <span class="sd">intra-package imports or else need to import other modules from within the same</span>
 <span class="sd">package which do.</span>
 
-<span class="sd">To use the package just import it before any of the non-system files, inside any</span>
-<span class="sd">module that you might want to run as a script, and call the `init` function.</span>
-<span class="sd">These statements should be inside a guard conditional, so that they only run</span>
-<span class="sd">when the module is executed as a script::</span>
+<span class="sd">To use the `_set_package_attribute` module just import it before any of the</span>
+<span class="sd">non-system files, inside any module that you might want to run as a script, and</span>
+<span class="sd">call the `init` function.  These statements should be inside a guard</span>
+<span class="sd">conditional, so that they only run when the module is executed as a script::</span>
 
 <span class="sd">   if __name__ == &quot;__main__&quot;:</span>
 <span class="sd">       import set_package_attribute</span>
@@ -85,14 +85,14 @@
 <span class="sd">The default is false, i.e., the path is not modified.</span>
 
 <span class="sd">Even using absolute intra-package imports within a script requires that the</span>
-<span class="sd">package itself be discoverable on Python&#39;s package search path.  This package</span>
+<span class="sd">package itself be discoverable on Python&#39;s package search path.  This module</span>
 <span class="sd">also takes care of that, temporarily adding the directory containing the</span>
 <span class="sd">package root to `sys.path` and then deleting it again after doing the import.</span>
 
-<span class="sd">Another use of this package is that it allows explicit relative imports to be</span>
-<span class="sd">used for intra-package imports in the main module of a Python application</span>
-<span class="sd">(i.e., in a Python application&#39;s entry-point script).  Usually, `as described</span>
-<span class="sd">in the Python documentation</span>
+<span class="sd">Another use of the `set_package_attribute` module is that it allows explicit</span>
+<span class="sd">relative imports to be used for intra-package imports in the main module of a</span>
+<span class="sd">Python application (i.e., in a Python application&#39;s entry-point script).</span>
+<span class="sd">Usually, `as described in the Python documentation</span>
 <span class="sd">&lt;https://docs.python.org/3/tutorial/modules.html#intra-package-references&gt;`_,</span>
 <span class="sd">these imports should always be absolute imports.  That is, without the</span>
 <span class="sd">`__package__` attribute being set such modules should generally only import</span>
@@ -137,15 +137,15 @@
 
 <span class="sd">   pip install set-package-attribute</span>
 
-<span class="sd">The package can also be installed by cloning it and running its `setup.py` file</span>
+<span class="sd">The module can also be installed by cloning it and running its `setup.py` file</span>
 <span class="sd">in the usual way.  The clone command is:</span>
 
 <span class="sd">.. code:: bash</span>
 
 <span class="sd">   git clone https://github.com/abarker/set-package-attribute</span>
 
-<span class="sd">The package currently consists of a single module, which could also simply be</span>
-<span class="sd">copied to somewhere in the Python path (to avoid adding a dependency).</span>
+<span class="sd">The distribution currently consists of a single module, which could also simply</span>
+<span class="sd">be copied to somewhere in the Python path (to avoid adding a dependency).</span>
 
 <span class="sd">Further details</span>
 <span class="sd">---------------</span>

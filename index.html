@@ -57,10 +57,10 @@ sets the <tt class="code docutils literal"><span class="pre">__package__</span><
 be used in modules which might be run as scripts and which either use
 intra-package imports or else need to import other modules from within the same
 package which do.</p>
-<p>To use the package just import it before any of the non-system files, inside any
-module that you might want to run as a script, and call the <tt class="code docutils literal"><span class="pre">init</span></tt> function.
-These statements should be inside a guard conditional, so that they only run
-when the module is executed as a script:</p>
+<p>To use the <tt class="code docutils literal"><span class="pre">_set_package_attribute</span></tt> module just import it before any of the
+non-system files, inside any module that you might want to run as a script, and
+call the <tt class="code docutils literal"><span class="pre">init</span></tt> function.  These statements should be inside a guard
+conditional, so that they only run when the module is executed as a script:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">set_package_attribute</span>
     <span class="n">set_package_attribute</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
@@ -78,13 +78,13 @@ added to the package search path when scripts are fun from inside the package.
 It is not guaranteed not to create other problems, but it works in test cases.
 The default is false, i.e., the path is not modified.</p>
 <p>Even using absolute intra-package imports within a script requires that the
-package itself be discoverable on Python&#8217;s package search path.  This package
+package itself be discoverable on Python&#8217;s package search path.  This module
 also takes care of that, temporarily adding the directory containing the
 package root to <tt class="code docutils literal"><span class="pre">sys.path</span></tt> and then deleting it again after doing the import.</p>
-<p>Another use of this package is that it allows explicit relative imports to be
-used for intra-package imports in the main module of a Python application
-(i.e., in a Python application&#8217;s entry-point script).  Usually, <a class="reference external" href="https://docs.python.org/3/tutorial/modules.html#intra-package-references">as described
-in the Python documentation</a>,
+<p>Another use of the <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> module is that it allows explicit
+relative imports to be used for intra-package imports in the main module of a
+Python application (i.e., in a Python application&#8217;s entry-point script).
+Usually, <a class="reference external" href="https://docs.python.org/3/tutorial/modules.html#intra-package-references">as described in the Python documentation</a>,
 these imports should always be absolute imports.  That is, without the
 <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute being set such modules should generally only import
 intra-package modules by their full, package-qualified names (with the package
@@ -123,13 +123,13 @@ package and have its intra-package explicit relative imports work.</li>
 <div class="code bash highlight-python"><div class="highlight"><pre>pip install set-package-attribute
 </pre></div>
 </div>
-<p>The package can also be installed by cloning it and running its <tt class="code docutils literal"><span class="pre">setup.py</span></tt> file
+<p>The module can also be installed by cloning it and running its <tt class="code docutils literal"><span class="pre">setup.py</span></tt> file
 in the usual way.  The clone command is:</p>
 <div class="code bash highlight-python"><div class="highlight"><pre>git clone https://github.com/abarker/set-package-attribute
 </pre></div>
 </div>
-<p>The package currently consists of a single module, which could also simply be
-copied to somewhere in the Python path (to avoid adding a dependency).</p>
+<p>The distribution currently consists of a single module, which could also simply
+be copied to somewhere in the Python path (to avoid adding a dependency).</p>
 </div>
 <div class="section" id="further-details">
 <h2>Further details<a class="headerlink" href="#further-details" title="Permalink to this headline">¶</a></h2>

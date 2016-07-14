@@ -35,10 +35,10 @@ added to the package search path when scripts are fun from inside the package.
 It is not guaranteed not to create other problems, but it works in test cases.
 The default is false, i.e., the path is not modified.
 
-To even use absolute intra-package imports within a script the package itself
-needs to be found on Python's package search path.  This package also takes
-care of that, temporarily adding the directory containing the package root to
-`sys.path` (and then deleting it again after doing the import).
+Even using absolute intra-package imports within a script requires that the
+package itself be discoverable on Python's package search path.  This package
+also takes care of that, temporarily adding the directory containing the
+package root to `sys.path` and then deleting it again after doing the import.
 
 Another use of this package is that it allows explicit relative imports to be
 used for intra-package imports in the main module of a Python application

@@ -27,18 +27,30 @@ within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
 `__package__` attribute (other than `None`) will be left unchanged.
 
+The `init` function takes one optional boolean parameter, `mod_path`.  If it is
+set true then whenever the `__package__` attribute is set by `init` the first
+element of `sys.path` is also deleted.  This avoids some of the aliasing
+problems that can arise from directories inside packages being automatically
+added to the package search path when scripts are fun from inside the package.
+It is not guaranteed not to create other problems, but it works in test cases.
+The default is false, i.e., the path is not modified.
+
 To even use absolute intra-package imports within a script the package itself
 needs to be found on Python's package search path.  This package also takes
 care of that, temporarily adding the directory containing the package root to
-`sys.path` if necessary, and then deleting it again.
+`sys.path` (and then deleting it again after doing the import).
 
-The `init` function takes one optional boolean parameter `mod_path`.  If it is
-set true then whenever `__package__` is set the first element of `sys.path` is
-also deleted.  This avoids some of the aliasing problems that can arise from
-directories inside packages being automatically added to the package search
-path when scripts inside the package are run.  It is not guaranteed not to
-create other problems, but it works in test cases.  The default is false, i.e.,
-the path is not modified.
+Another use of this package is that it allows explicit relative imports to be
+used for intra-package imports in the main module of a Python application
+(i.e., in a Python application's entry-point script).  Usually, `as described
+in the Python documentation
+<https://docs.python.org/3/tutorial/modules.html#intra-package-references>`_,
+these imports should always be absolute imports.  That is, without the
+`__package__` attribute being set such modules should generally only import
+intra-package modules by their full, package-qualified names (with the package
+itself being discoverable on `sys.path`).  The guard conditional is not
+required in this case, assuming entry-point module is only used to start the
+application and is not imported from another Python file.
 
 Some notes:
 
@@ -66,17 +78,6 @@ Some notes:
   module from within the same package (using explicit relative imports within
   that package).  You still cannot import a module from inside a *different*
   package and have its intra-package explicit relative imports work.
-
-Another use of this package is that it allows explicit relative imports to be
-used for intra-package imports in the main module of a Python application
-(i.e., in a Python application's entry-point script).  Usually, `as described
-in the Python documentation
-<https://docs.python.org/3/tutorial/modules.html#intra-package-references>`_,
-these imports should always be absolute imports.  That is, without the
-`__package__` attribute being set such modules should generally only import
-intra-package modules by their full, package-qualified names).  The guard
-conditional is not required in this case, assuming the application will always
-be run from the entry point rather than imported from another Python file.
 
 Installation
 ------------
@@ -171,7 +172,7 @@ def _set_package_attribute(mod_path=False):
         importing_file = main_module.__file__
         script_dirname, script_filename = os.path.split(
                                os.path.realpath(os.path.abspath(importing_file)))
-        filename = os.path.splitext(script_filename)[0]
+        script_module_name = os.path.splitext(script_filename)[0]
         parent_dirs = [] # A reversed list of package name parts, to build up.
 
         # Go up the directory tree to find the top-level package directory.
@@ -200,7 +201,7 @@ def _set_package_attribute(mod_path=False):
             del sys.path[0] # Remove the added path; no longer needed.
 
             #assert full_subpackage_name in sys.modules # True
-            full_module_name = full_subpackage_name + "." + filename
+            full_module_name = full_subpackage_name + "." + script_module_name
             #assert full_module_name not in sys.modules # True
             sys.modules[full_module_name] = main_module
             #assert full_module_name in sys.modules # True

@@ -1,3 +1,4 @@
+# See 'man gitignore'.
 
 # Rope
 .ropeproject
@@ -9,16 +10,20 @@ __pycache__/
 # Sphinx documentation
 #_build # Cannot ignore this the way the gh-pages are currently being built/deployed.
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
 # Setuptools stuff
 *.egg-info
 
 # py.test cashe
 .cache
 
-# vim swap
+# Vim swap.
 *.swp
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Distribution directory from setup.py sdist.
+/dist
+!*/dist # Need for older git versions.
 

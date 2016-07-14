@@ -7,23 +7,23 @@
 __pycache__/
 *.py[cod]
 
-# Sphinx documentation
-#_build # Cannot ignore this the way the gh-pages are currently being built/deployed.
+# Sphinx documentation build directory.
+_build
 
-# Setuptools stuff
+# Setuptools stuff.
 *.egg-info
 
-# py.test cashe
+# Cache for py.test.
 .cache
 
 # Vim swap.
 *.swp
 
-# Installer logs
+# Installer logs.
 pip-log.txt
 pip-delete-this-directory.txt
 
 # Distribution directory from setup.py sdist.
 /dist
-!*/dist # Need for older git versions.
+!*/dist # Needed for older versions of git (don't ignore dist deeper than root level).
 

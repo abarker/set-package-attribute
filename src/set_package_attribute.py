@@ -13,10 +13,10 @@ be used in modules which might be run as scripts and which either use
 intra-package imports or else need to import other modules from within the same
 package which do.
 
-To use the package just import it before any of the non-system files, inside any
-module that you might want to run as a script, and call the `init` function.
-These statements should be inside a guard conditional, so that they only run
-when the module is executed as a script::
+To use the `_set_package_attribute` module just import it before any of the
+non-system files, inside any module that you might want to run as a script, and
+call the `init` function.  These statements should be inside a guard
+conditional, so that they only run when the module is executed as a script::
 
    if __name__ == "__main__":
        import set_package_attribute
@@ -36,14 +36,14 @@ It is not guaranteed not to create other problems, but it works in test cases.
 The default is false, i.e., the path is not modified.
 
 Even using absolute intra-package imports within a script requires that the
-package itself be discoverable on Python's package search path.  This package
+package itself be discoverable on Python's package search path.  This module
 also takes care of that, temporarily adding the directory containing the
 package root to `sys.path` and then deleting it again after doing the import.
 
-Another use of this package is that it allows explicit relative imports to be
-used for intra-package imports in the main module of a Python application
-(i.e., in a Python application's entry-point script).  Usually, `as described
-in the Python documentation
+Another use of the `set_package_attribute` module is that it allows explicit
+relative imports to be used for intra-package imports in the main module of a
+Python application (i.e., in a Python application's entry-point script).
+Usually, `as described in the Python documentation
 <https://docs.python.org/3/tutorial/modules.html#intra-package-references>`_,
 these imports should always be absolute imports.  That is, without the
 `__package__` attribute being set such modules should generally only import
@@ -88,15 +88,15 @@ The simplest way to install is to use pip:
 
    pip install set-package-attribute
 
-The package can also be installed by cloning it and running its `setup.py` file
+The module can also be installed by cloning it and running its `setup.py` file
 in the usual way.  The clone command is:
 
 .. code:: bash
 
    git clone https://github.com/abarker/set-package-attribute
 
-The package currently consists of a single module, which could also simply be
-copied to somewhere in the Python path (to avoid adding a dependency).
+The distribution currently consists of a single module, which could also simply
+be copied to somewhere in the Python path (to avoid adding a dependency).
 
 Further details
 ---------------

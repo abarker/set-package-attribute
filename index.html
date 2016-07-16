@@ -52,15 +52,15 @@ explicit relative imports are used.</p>
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>In order to run a module inside a package as a script and have explicit
 relative imports work, the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the module should be set.
-Importing <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> from a script and running its <tt class="code docutils literal"><span class="pre">init</span></tt> function
-sets the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the module <tt class="code docutils literal"><span class="pre">__main__</span></tt>.  This is intended to
-be used in modules which might be run as scripts and which either use
-intra-package imports or else need to import other modules from within the same
-package which do.</p>
-<p>To use the <tt class="code docutils literal"><span class="pre">_set_package_attribute</span></tt> module just import it before any of the
-non-system files, inside any module that you might want to run as a script, and
-call the <tt class="code docutils literal"><span class="pre">init</span></tt> function.  These statements should be inside a guard
-conditional, so that they only run when the module is executed as a script:</p>
+Importing <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> from such a script and running its <tt class="code docutils literal"><span class="pre">init</span></tt>
+function will set the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the script&#8217;s module (which is
+<tt class="code docutils literal"><span class="pre">__main__</span></tt>).  This is intended for use in any module inside a package which
+might ever be run as a script and which either uses intra-package imports or else
+imports other modules from within the same package which do.</p>
+<p>To use <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> just import it before any of the non-system
+files, inside any module that you might want to run as a script, and call the
+<tt class="code docutils literal"><span class="pre">init</span></tt> function.  This should be done inside a guard conditional, so that it
+only runs when the module is executed as a script:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">set_package_attribute</span>
     <span class="n">set_package_attribute</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
@@ -72,15 +72,17 @@ within the same package which themselves use such imports.  Any previously-set
 <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute (other than <tt class="code docutils literal"><span class="pre">None</span></tt>) will be left unchanged.</p>
 <p>The <tt class="code docutils literal"><span class="pre">init</span></tt> function takes one optional boolean parameter, <tt class="code docutils literal"><span class="pre">mod_path</span></tt>.  If it is
 set true then whenever the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute is set by <tt class="code docutils literal"><span class="pre">init</span></tt> the first
-element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt> is also deleted.  This avoids some of the aliasing
-problems that can arise from directories inside packages being automatically
-added to the package search path when scripts are fun from inside the package.
-It is not guaranteed not to create other problems, but it works in test cases.
-The default is false, i.e., the path is not modified.</p>
-<p>Even using absolute intra-package imports within a script requires that the
-package itself be discoverable on Python&#8217;s package search path.  This module
-also takes care of that, temporarily adding the directory containing the
-package root to <tt class="code docutils literal"><span class="pre">sys.path</span></tt> and then deleting it again after doing the import.</p>
+element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt> is also deleted.  This avoids some of the potential
+aliasing and shadowing problems that can arise when directories inside packages
+are added to <tt class="code docutils literal"><span class="pre">sys.path</span></tt> (Python automatically inserts a script&#8217;s directory as
+the first element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt>).  This is not guaranteed not to create other
+problems, but it works in test cases.  The default is false, i.e., <tt class="code docutils literal"><span class="pre">sys.path</span></tt>
+is not modified.</p>
+<p>Even the use of absolute intra-package imports within a script requires that
+the package itself be discoverable on <tt class="code docutils literal"><span class="pre">sys.path</span></tt>.  This module also takes care
+of that, temporarily adding the directory containing the package&#8217;s root
+directory to <tt class="code docutils literal"><span class="pre">sys.path</span></tt> and then restoring the original <tt class="code docutils literal"><span class="pre">sys.path</span></tt> after doing
+the import.</p>
 <p>Another use of the <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> module is that it allows explicit
 relative imports to be used for intra-package imports in the main module of a
 Python application (i.e., in a Python application&#8217;s entry-point script).
@@ -88,33 +90,36 @@ Usually, <a class="reference external" href="https://docs.python.org/3/tutorial/
 these imports should always be absolute imports.  That is, without the
 <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute being set such modules should generally only import
 intra-package modules by their full, package-qualified names (with the package
-itself being discoverable on <tt class="code docutils literal"><span class="pre">sys.path</span></tt>).  The guard conditional is not
-required in this case, assuming entry-point module is only used to start the
-application and is not imported from another Python file.</p>
+itself being discoverable on <tt class="code docutils literal"><span class="pre">sys.path</span></tt>).  The guard conditional would not be
+required in this case, assuming the entry-point module is only ever used to
+start the application and is not imported from another Python file.</p>
 <p>Some notes:</p>
 <ul class="simple">
 <li>Internally, this module also needs to import the package directory
 containing the script module (under its full package-qualified name).  A
 side-effect of this is that any <tt class="code docutils literal"><span class="pre">__init__.py</span></tt> files in the package path down
 to the script (from the top package level) will be executed.  Similarly, any
-modules you import within the package will cause the init files down to them
-to be run.  This could give unexpected results compared to running the script
-outside the package, depending on how <tt class="code docutils literal"><span class="pre">__init__.py</span></tt> files are used in a given
-package.  The effect is essentially the same as if the script file had been
-imported using its full, package-qualified module name.</li>
-<li>The basic mechanism will still work if the guard conditional is left off.
-But a problem would occur if an external script in a <em>different</em> package were
-to explicitly or implicity import a module which itself imports
-<tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt>.  This includes importing it as part of its full
-package, say if the init module imports it.  This would have the side-effect
-of setting the package attribute of the <tt class="code docutils literal"><span class="pre">__main__</span></tt> module, which in this case
-is the module for the external script.  Often this would not be a problem,
-since it will be correctly set, but it might result in unexpected behavior
+modules you import as intra-package imports will cause the init files down to
+them to be run.  This could give unexpected results as compared with simply
+running the script not as a part of the package, depending on how
+<tt class="code docutils literal"><span class="pre">__init__.py</span></tt> files are used in a given package.  The effect is essentially
+the same as if the script file had been imported using its full,
+package-qualified module name.</li>
+<li>The basic mechanism still works if the guard conditional is left off.
+Without it, though, if a script in a <em>different</em> package were to explicitly
+or implicity import a module which itself imports and uses
+<tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt>, a potential problem would occur.  This includes
+importing that module as part of its full package, say if the <tt class="code docutils literal"><span class="pre">__init__.py</span></tt>
+of that imported package imports the module (which happens quite often).
+This would have the side-effect of setting the package attribute of the
+<tt class="code docutils literal"><span class="pre">__main__</span></tt> module, which in this case is the module for a script in an
+entirely different package.  Often this would not cause a problem, since it
+would at least be set correctly, but it might result in unexpected behavior
 that could be difficult to trace.</li>
-<li>This only works for intra-package imports, i.e., a module importing another
-module from within the same package (using explicit relative imports within
-that package).  You still cannot import a module from inside a <em>different</em>
-package and have its intra-package explicit relative imports work.</li>
+<li>This only works for intra-package imports, i.e., for a module importing
+another module from within <em>its own</em> package.  You still cannot directly
+import a module from inside a <em>different</em> package and expect its
+intra-package imports to work.</li>
 </ul>
 </div>
 <div class="section" id="installation">

@@ -56,16 +56,16 @@
 
 <span class="sd">In order to run a module inside a package as a script and have explicit</span>
 <span class="sd">relative imports work, the `__package__` attribute of the module should be set.</span>
-<span class="sd">Importing `set_package_attribute` from a script and running its `init` function</span>
-<span class="sd">sets the `__package__` attribute of the module `__main__`.  This is intended to</span>
-<span class="sd">be used in modules which might be run as scripts and which either use</span>
-<span class="sd">intra-package imports or else need to import other modules from within the same</span>
-<span class="sd">package which do.</span>
+<span class="sd">Importing `set_package_attribute` from such a script and running its `init`</span>
+<span class="sd">function will set the `__package__` attribute of the script&#39;s module (which is</span>
+<span class="sd">always `__main__`).  This is intended for use in any module inside a package which</span>
+<span class="sd">might ever be run as a script and which either uses intra-package imports or else</span>
+<span class="sd">imports other modules from within the same package which do.</span>
 
-<span class="sd">To use the package just import it before any of the non-system files, inside any</span>
-<span class="sd">module that you might want to run as a script, and call the `init` function.</span>
-<span class="sd">These statements should be inside a guard conditional, so that they only run</span>
-<span class="sd">when the module is executed as a script::</span>
+<span class="sd">To use `set_package_attribute` just import it before any of the non-system</span>
+<span class="sd">files, inside any module that you might want to run as a script, and call the</span>
+<span class="sd">`init` function.  This should be done inside a guard conditional, so that it</span>
+<span class="sd">only runs when the module is executed as a script::</span>
 
 <span class="sd">   if __name__ == &quot;__main__&quot;:</span>
 <span class="sd">       import set_package_attribute</span>
@@ -76,18 +76,32 @@
 <span class="sd">within the same package which themselves use such imports.  Any previously-set</span>
 <span class="sd">`__package__` attribute (other than `None`) will be left unchanged.</span>
 
-<span class="sd">To even use absolute intra-package imports within a script the package itself</span>
-<span class="sd">needs to be found on Python&#39;s package search path.  This package also takes</span>
-<span class="sd">care of that, temporarily adding the directory containing the package root to</span>
-<span class="sd">`sys.path` if necessary, and then deleting it again.</span>
+<span class="sd">The `init` function takes one optional boolean parameter, `mod_path`.  If it is</span>
+<span class="sd">set true then whenever the `__package__` attribute is set by `init` the first</span>
+<span class="sd">element of `sys.path` is also deleted.  This avoids some of the potential</span>
+<span class="sd">aliasing and shadowing problems that can arise when directories inside packages</span>
+<span class="sd">are added to `sys.path` (Python automatically inserts a script&#39;s directory as</span>
+<span class="sd">the first element of `sys.path`).  This is not guaranteed not to create other</span>
+<span class="sd">problems, but it works in test cases.  The default is false, i.e., `sys.path`</span>
+<span class="sd">is not modified.</span>
 
-<span class="sd">The `init` function takes one optional boolean parameter `mod_path`.  If it is</span>
-<span class="sd">set true then whenever `__package__` is set the first element of `sys.path` is</span>
-<span class="sd">also deleted.  This avoids some of the aliasing problems that can arise from</span>
-<span class="sd">directories inside packages being automatically added to the package search</span>
-<span class="sd">path when scripts inside the package are run.  It is not guaranteed not to</span>
-<span class="sd">create other problems, but it works in test cases.  The default is false, i.e.,</span>
-<span class="sd">the path is not modified.</span>
+<span class="sd">Even the use of absolute intra-package imports within a script requires that</span>
+<span class="sd">the package itself be discoverable on `sys.path`.  This module also takes care</span>
+<span class="sd">of that, temporarily adding the directory containing the package&#39;s root</span>
+<span class="sd">directory to `sys.path` and then restoring the original `sys.path` after doing</span>
+<span class="sd">the import.</span>
+
+<span class="sd">Another use of the `set_package_attribute` module is that it allows explicit</span>
+<span class="sd">relative imports to be used for intra-package imports in the main module of a</span>
+<span class="sd">Python application (i.e., in a Python application&#39;s entry-point script).</span>
+<span class="sd">Usually, `as described in the Python documentation</span>
+<span class="sd">&lt;https://docs.python.org/3/tutorial/modules.html#intra-package-references&gt;`_,</span>
+<span class="sd">these imports should always be absolute imports.  That is, without the</span>
+<span class="sd">`__package__` attribute being set such modules should generally only import</span>
+<span class="sd">intra-package modules by their full, package-qualified names (with the package</span>
+<span class="sd">itself being discoverable on `sys.path`).  The guard conditional would not be</span>
+<span class="sd">required in this case, assuming the entry-point module is only ever used to</span>
+<span class="sd">start the application and is not imported from another Python file.</span>
 
 <span class="sd">Some notes:</span>
 
@@ -95,37 +109,29 @@
 <span class="sd">  containing the script module (under its full package-qualified name).  A</span>
 <span class="sd">  side-effect of this is that any `__init__.py` files in the package path down</span>
 <span class="sd">  to the script (from the top package level) will be executed.  Similarly, any</span>
-<span class="sd">  modules you import within the package will cause the init files down to them</span>
-<span class="sd">  to be run.  This could give unexpected results compared to running the script</span>
-<span class="sd">  outside the package, depending on how `__init__.py` files are used in a given</span>
-<span class="sd">  package.  The effect is essentially the same as if the script file had been</span>
-<span class="sd">  imported using its full, package-qualified module name.</span>
+<span class="sd">  modules you import as intra-package imports will cause the init files down to</span>
+<span class="sd">  them to be run.  This could give unexpected results as compared with simply</span>
+<span class="sd">  running the script not as a part of the package, depending on how</span>
+<span class="sd">  `__init__.py` files are used in a given package.  The effect is essentially</span>
+<span class="sd">  the same as if the script file had been imported using its full,</span>
+<span class="sd">  package-qualified module name.</span>
 
-<span class="sd">* The basic mechanism will still work if the guard conditional is left off.</span>
-<span class="sd">  But a problem would occur if an external script in a *different* package were</span>
-<span class="sd">  to explicitly or implicity import a module which itself imports</span>
-<span class="sd">  `set_package_attribute`.  This includes importing it as part of its full</span>
-<span class="sd">  package, say if the init module imports it.  This would have the side-effect</span>
-<span class="sd">  of setting the package attribute of the `__main__` module, which in this case</span>
-<span class="sd">  is the module for the external script.  Often this would not be a problem,</span>
-<span class="sd">  since it will be correctly set, but it might result in unexpected behavior</span>
+<span class="sd">* The basic mechanism still works if the guard conditional is left off.</span>
+<span class="sd">  Without it, though, if a script in a *different* package were to explicitly</span>
+<span class="sd">  or implicity import a module which itself imports and uses</span>
+<span class="sd">  `set_package_attribute`, a potential problem would occur.  This includes</span>
+<span class="sd">  importing that module as part of its full package, say if the `__init__.py`</span>
+<span class="sd">  of that imported package imports the module (which happens quite often).</span>
+<span class="sd">  This would have the side-effect of setting the package attribute of the</span>
+<span class="sd">  `__main__` module, which in this case is the module for a script in an</span>
+<span class="sd">  entirely different package.  Often this would not cause a problem, since it</span>
+<span class="sd">  would at least be set correctly, but it might result in unexpected behavior</span>
 <span class="sd">  that could be difficult to trace.</span>
 
-<span class="sd">* This only works for intra-package imports, i.e., a module importing another</span>
-<span class="sd">  module from within the same package (using explicit relative imports within</span>
-<span class="sd">  that package).  You still cannot import a module from inside a *different*</span>
-<span class="sd">  package and have its intra-package explicit relative imports work.</span>
-
-<span class="sd">Another use of this package is that it allows explicit relative imports to be</span>
-<span class="sd">used for intra-package imports in the main module of a Python application</span>
-<span class="sd">(i.e., in a Python application&#39;s entry-point script).  Usually, `as described</span>
-<span class="sd">in the Python documentation</span>
-<span class="sd">&lt;https://docs.python.org/3/tutorial/modules.html#intra-package-references&gt;`_,</span>
-<span class="sd">these imports should always be absolute imports.  That is, without the</span>
-<span class="sd">`__package__` attribute being set such modules should generally only import</span>
-<span class="sd">intra-package modules by their full, package-qualified names).  The guard</span>
-<span class="sd">conditional is not required in this case, assuming the application will always</span>
-<span class="sd">be run from the entry point rather than imported from another Python file.</span>
+<span class="sd">* This only works for intra-package imports, i.e., for a module importing</span>
+<span class="sd">  another module from within *its own* package.  You still cannot directly</span>
+<span class="sd">  import a module from inside a *different* package and expect its</span>
+<span class="sd">  intra-package imports to work.</span>
 
 <span class="sd">Installation</span>
 <span class="sd">------------</span>
@@ -136,15 +142,15 @@
 
 <span class="sd">   pip install set-package-attribute</span>
 
-<span class="sd">The package can also be installed by cloning it and running its `setup.py` file</span>
+<span class="sd">The module can also be installed by cloning it and running its `setup.py` file</span>
 <span class="sd">in the usual way.  The clone command is:</span>
 
 <span class="sd">.. code:: bash</span>
 
 <span class="sd">   git clone https://github.com/abarker/set-package-attribute</span>
 
-<span class="sd">The package currently consists of a single module, which could also simply be</span>
-<span class="sd">copied to somewhere in the Python path (to avoid adding a dependency).</span>
+<span class="sd">The distribution currently consists of a single module, which could also simply</span>
+<span class="sd">be copied to somewhere in the Python path (to avoid adding a dependency).</span>
 
 <span class="sd">Further details</span>
 <span class="sd">---------------</span>
@@ -220,7 +226,7 @@
         <span class="n">importing_file</span> <span class="o">=</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__file__</span>
         <span class="n">script_dirname</span><span class="p">,</span> <span class="n">script_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
                                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">importing_file</span><span class="p">)))</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">script_module_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">parent_dirs</span> <span class="o">=</span> <span class="p">[]</span> <span class="c"># A reversed list of package name parts, to build up.</span>
 
         <span class="c"># Go up the directory tree to find the top-level package directory.</span>
@@ -249,7 +255,7 @@
             <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># Remove the added path; no longer needed.</span>
 
             <span class="c">#assert full_subpackage_name in sys.modules # True</span>
-            <span class="n">full_module_name</span> <span class="o">=</span> <span class="n">full_subpackage_name</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">filename</span>
+            <span class="n">full_module_name</span> <span class="o">=</span> <span class="n">full_subpackage_name</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">script_module_name</span>
             <span class="c">#assert full_module_name not in sys.modules # True</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">full_module_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_module</span>
             <span class="c">#assert full_module_name in sys.modules # True</span>

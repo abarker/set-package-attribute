@@ -9,7 +9,7 @@ In order to run a module inside a package as a script and have explicit
 relative imports work, the `__package__` attribute of the module should be set.
 Importing `set_package_attribute` from such a script and running its `init`
 function will set the `__package__` attribute of the script's module (which is
-`__main__`).  This is intended for use in any module inside a package which
+always `__main__`).  This is intended for use in any module inside a package which
 might ever be run as a script and which either uses intra-package imports or else
 imports other modules from within the same package which do.
 

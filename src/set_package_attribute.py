@@ -7,16 +7,16 @@ Description
 
 In order to run a module inside a package as a script and have explicit
 relative imports work, the `__package__` attribute of the module should be set.
-Importing `set_package_attribute` from a script and running its `init` function
-sets the `__package__` attribute of the module `__main__`.  This is intended to
-be used in modules which might be run as scripts and which either use
-intra-package imports or else need to import other modules from within the same
-package which do.
+Importing `set_package_attribute` from such a script and running its `init`
+function will set the `__package__` attribute of the script's module (which is
+`__main__`).  This is intended for use in any module inside a package which
+might ever be run as a script and which either uses intra-package imports or else
+imports other modules from within the same package which do.
 
-To use the `_set_package_attribute` module just import it before any of the
-non-system files, inside any module that you might want to run as a script, and
-call the `init` function.  These statements should be inside a guard
-conditional, so that they only run when the module is executed as a script::
+To use `set_package_attribute` just import it before any of the non-system
+files, inside any module that you might want to run as a script, and call the
+`init` function.  This should be done inside a guard conditional, so that it
+only runs when the module is executed as a script::
 
    if __name__ == "__main__":
        import set_package_attribute
@@ -29,16 +29,18 @@ within the same package which themselves use such imports.  Any previously-set
 
 The `init` function takes one optional boolean parameter, `mod_path`.  If it is
 set true then whenever the `__package__` attribute is set by `init` the first
-element of `sys.path` is also deleted.  This avoids some of the aliasing
-problems that can arise from directories inside packages being automatically
-added to the package search path when scripts are fun from inside the package.
-It is not guaranteed not to create other problems, but it works in test cases.
-The default is false, i.e., the path is not modified.
+element of `sys.path` is also deleted.  This avoids some of the potential
+aliasing and shadowing problems that can arise when directories inside packages
+are added to `sys.path` (Python automatically inserts a script's directory as
+the first element of `sys.path`).  This is not guaranteed not to create other
+problems, but it works in test cases.  The default is false, i.e., `sys.path`
+is not modified.
 
-Even using absolute intra-package imports within a script requires that the
-package itself be discoverable on Python's package search path.  This module
-also takes care of that, temporarily adding the directory containing the
-package root to `sys.path` and then deleting it again after doing the import.
+Even the use of absolute intra-package imports within a script requires that
+the package itself be discoverable on `sys.path`.  This module also takes care
+of that, temporarily adding the directory containing the package's root
+directory to `sys.path` and then restoring the original `sys.path` after doing
+the import.
 
 Another use of the `set_package_attribute` module is that it allows explicit
 relative imports to be used for intra-package imports in the main module of a
@@ -48,9 +50,9 @@ Usually, `as described in the Python documentation
 these imports should always be absolute imports.  That is, without the
 `__package__` attribute being set such modules should generally only import
 intra-package modules by their full, package-qualified names (with the package
-itself being discoverable on `sys.path`).  The guard conditional is not
-required in this case, assuming entry-point module is only used to start the
-application and is not imported from another Python file.
+itself being discoverable on `sys.path`).  The guard conditional would not be
+required in this case, assuming the entry-point module is only ever used to
+start the application and is not imported from another Python file.
 
 Some notes:
 
@@ -58,26 +60,29 @@ Some notes:
   containing the script module (under its full package-qualified name).  A
   side-effect of this is that any `__init__.py` files in the package path down
   to the script (from the top package level) will be executed.  Similarly, any
-  modules you import within the package will cause the init files down to them
-  to be run.  This could give unexpected results compared to running the script
-  outside the package, depending on how `__init__.py` files are used in a given
-  package.  The effect is essentially the same as if the script file had been
-  imported using its full, package-qualified module name.
+  modules you import as intra-package imports will cause the init files down to
+  them to be run.  This could give unexpected results as compared with simply
+  running the script not as a part of the package, depending on how
+  `__init__.py` files are used in a given package.  The effect is essentially
+  the same as if the script file had been imported using its full,
+  package-qualified module name.
 
-* The basic mechanism will still work if the guard conditional is left off.
-  But a problem would occur if an external script in a *different* package were
-  to explicitly or implicity import a module which itself imports
-  `set_package_attribute`.  This includes importing it as part of its full
-  package, say if the init module imports it.  This would have the side-effect
-  of setting the package attribute of the `__main__` module, which in this case
-  is the module for the external script.  Often this would not be a problem,
-  since it will be correctly set, but it might result in unexpected behavior
+* The basic mechanism still works if the guard conditional is left off.
+  Without it, though, if a script in a *different* package were to explicitly
+  or implicity import a module which itself imports and uses
+  `set_package_attribute`, a potential problem would occur.  This includes
+  importing that module as part of its full package, say if the `__init__.py`
+  of that imported package imports the module (which happens quite often).
+  This would have the side-effect of setting the package attribute of the
+  `__main__` module, which in this case is the module for a script in an
+  entirely different package.  Often this would not cause a problem, since it
+  would at least be set correctly, but it might result in unexpected behavior
   that could be difficult to trace.
 
-* This only works for intra-package imports, i.e., a module importing another
-  module from within the same package (using explicit relative imports within
-  that package).  You still cannot import a module from inside a *different*
-  package and have its intra-package explicit relative imports work.
+* This only works for intra-package imports, i.e., for a module importing
+  another module from within *its own* package.  You still cannot directly
+  import a module from inside a *different* package and expect its
+  intra-package imports to work.
 
 Installation
 ------------

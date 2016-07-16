@@ -54,7 +54,7 @@ explicit relative imports are used.</p>
 relative imports work, the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the module should be set.
 Importing <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> from such a script and running its <tt class="code docutils literal"><span class="pre">init</span></tt>
 function will set the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the script&#8217;s module (which is
-<tt class="code docutils literal"><span class="pre">__main__</span></tt>).  This is intended for use in any module inside a package which
+always <tt class="code docutils literal"><span class="pre">__main__</span></tt>).  This is intended for use in any module inside a package which
 might ever be run as a script and which either uses intra-package imports or else
 imports other modules from within the same package which do.</p>
 <p>To use <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> just import it before any of the non-system

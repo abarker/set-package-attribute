@@ -4,9 +4,10 @@
 set-package-attribute
 =====================
 
-Automatically sets the `__package__` attribute of any script which imports it
-and calls `set_package_attribute.init()`.  This is usually done so that
-the usual intra-package imports work for scripts inside packages.
+Run modules inside packages as scripts.  Automatically sets the `__package__`
+attribute of any script which imports it and calls the initialization function
+`set_package_attribute.init()`.  This is usually done so that the usual
+intra-package imports work for scripts inside packages.
 
 For full documentation, see https://abarker.github.io/set-package-attribute.
 

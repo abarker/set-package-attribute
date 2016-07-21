@@ -133,6 +133,20 @@
 <span class="sd">  import a module from inside a *different* package and expect its</span>
 <span class="sd">  intra-package imports to work.</span>
 
+<span class="sd">* An alternative approach is to always execute scripts inside packages with</span>
+<span class="sd">  the `-m` flag set.  For example, to execute a script `module_name.py`,</span>
+<span class="sd">  which is in a subdirectory inside a package `pkg_toplevel`, you would use:</span>
+
+<span class="sd">  .. code:: bash</span>
+
+<span class="sd">     python -m pkg_toplevel.pkg_subdir.module_name</span>
+<span class="sd">       </span>
+<span class="sd">  This requires the full package name to be used, however, and has a</span>
+<span class="sd">  different invocation method than other scripts.  Also, the directory</span>
+<span class="sd">  containing the top-level package directory `pkg_toplevel` (i.e., its parent</span>
+<span class="sd">  directory) needs to be in Python&#39;s package search path in order for this</span>
+<span class="sd">  approach to work.</span>
+
 <span class="sd">Installation</span>
 <span class="sd">------------</span>
 
@@ -174,22 +188,6 @@
 
 <span class="sd">    This module is based on the basic method described in the answers on this</span>
 <span class="sd">    StackOverflow page: http://stackoverflow.com/questions/2943847/</span>
-
-<span class="sd">.. note::</span>
-
-<span class="sd">    An alternative approach is to always execute scripts inside packages with</span>
-<span class="sd">    the `-m` flag set.  For example, to execute a script `module_name.py`,</span>
-<span class="sd">    which is in a subdirectory inside a package `pkg_toplevel`, you would use:</span>
-
-<span class="sd">    .. code:: bash</span>
-
-<span class="sd">       python -m pkg_toplevel.pkg_subdir.module_name</span>
-<span class="sd">       </span>
-<span class="sd">    This requires the full package name to be used, however, and has a</span>
-<span class="sd">    different invocation method than other scripts.  Also, the directory</span>
-<span class="sd">    containing the top-level package directory `pkg_toplevel` (i.e., its parent</span>
-<span class="sd">    directory) needs to be in Python&#39;s package search path in order for this</span>
-<span class="sd">    approach to work.</span>
 
 <span class="sd">.. note::</span>
 

@@ -94,8 +94,8 @@ itself being discoverable on <tt class="code docutils literal"><span class="pre"
 required in this case, assuming the entry-point module is only ever used to
 start the application and is not imported from another Python file.</p>
 <p>Some notes:</p>
-<ul class="simple">
-<li>Internally, this module also needs to import the package directory
+<ul>
+<li><p class="first">Internally, this module also needs to import the package directory
 containing the script module (under its full package-qualified name).  A
 side-effect of this is that any <tt class="code docutils literal"><span class="pre">__init__.py</span></tt> files in the package path down
 to the script (from the top package level) will be executed.  Similarly, any
@@ -104,8 +104,9 @@ them to be run.  This could give unexpected results as compared with simply
 running the script not as a part of the package, depending on how
 <tt class="code docutils literal"><span class="pre">__init__.py</span></tt> files are used in a given package.  The effect is essentially
 the same as if the script file had been imported using its full,
-package-qualified module name.</li>
-<li>The basic mechanism still works if the guard conditional is left off.
+package-qualified module name.</p>
+</li>
+<li><p class="first">The basic mechanism still works if the guard conditional is left off.
 Without it, though, if a script in a <em>different</em> package were to explicitly
 or implicity import a module which itself imports and uses
 <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt>, a potential problem would occur.  This includes
@@ -115,11 +116,25 @@ This would have the side-effect of setting the package attribute of the
 <tt class="code docutils literal"><span class="pre">__main__</span></tt> module, which in this case is the module for a script in an
 entirely different package.  Often this would not cause a problem, since it
 would at least be set correctly, but it might result in unexpected behavior
-that could be difficult to trace.</li>
-<li>This only works for intra-package imports, i.e., for a module importing
+that could be difficult to trace.</p>
+</li>
+<li><p class="first">This only works for intra-package imports, i.e., for a module importing
 another module from within <em>its own</em> package.  You still cannot directly
 import a module from inside a <em>different</em> package and expect its
-intra-package imports to work.</li>
+intra-package imports to work.</p>
+</li>
+<li><p class="first">An alternative approach is to always execute scripts inside packages with
+the <tt class="code docutils literal"><span class="pre">-m</span></tt> flag set.  For example, to execute a script <tt class="code docutils literal"><span class="pre">module_name.py</span></tt>,
+which is in a subdirectory inside a package <tt class="code docutils literal"><span class="pre">pkg_toplevel</span></tt>, you would use:</p>
+<div class="code bash highlight-python"><div class="highlight"><pre>python -m pkg_toplevel.pkg_subdir.module_name
+</pre></div>
+</div>
+<p>This requires the full package name to be used, however, and has a
+different invocation method than other scripts.  Also, the directory
+containing the top-level package directory <tt class="code docutils literal"><span class="pre">pkg_toplevel</span></tt> (i.e., its parent
+directory) needs to be in Python&#8217;s package search path in order for this
+approach to work.</p>
+</li>
 </ul>
 </div>
 <div class="section" id="installation">
@@ -154,20 +169,6 @@ fully-qualified name.  An entry for the <tt class="code docutils literal"><span 
 <p class="first admonition-title">See also</p>
 <p class="last">This module is based on the basic method described in the answers on this
 StackOverflow page: <a class="reference external" href="http://stackoverflow.com/questions/2943847/">http://stackoverflow.com/questions/2943847/</a></p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p>An alternative approach is to always execute scripts inside packages with
-the <tt class="code docutils literal"><span class="pre">-m</span></tt> flag set.  For example, to execute a script <tt class="code docutils literal"><span class="pre">module_name.py</span></tt>,
-which is in a subdirectory inside a package <tt class="code docutils literal"><span class="pre">pkg_toplevel</span></tt>, you would use:</p>
-<div class="code bash highlight-python"><div class="highlight"><pre>python -m pkg_toplevel.pkg_subdir.module_name
-</pre></div>
-</div>
-<p class="last">This requires the full package name to be used, however, and has a
-different invocation method than other scripts.  Also, the directory
-containing the top-level package directory <tt class="code docutils literal"><span class="pre">pkg_toplevel</span></tt> (i.e., its parent
-directory) needs to be in Python&#8217;s package search path in order for this
-approach to work.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

@@ -84,6 +84,20 @@ Some notes:
   import a module from inside a *different* package and expect its
   intra-package imports to work.
 
+* An alternative approach is to always execute scripts inside packages with
+  the `-m` flag set.  For example, to execute a script `module_name.py`,
+  which is in a subdirectory inside a package `pkg_toplevel`, you would use:
+
+  .. code:: bash
+
+     python -m pkg_toplevel.pkg_subdir.module_name
+       
+  This requires the full package name to be used, however, and has a
+  different invocation method than other scripts.  Also, the directory
+  containing the top-level package directory `pkg_toplevel` (i.e., its parent
+  directory) needs to be in Python's package search path in order for this
+  approach to work.
+
 Installation
 ------------
 
@@ -125,22 +139,6 @@ fully-qualified name.  An entry for the `__main__` module is also added to
 
     This module is based on the basic method described in the answers on this
     StackOverflow page: http://stackoverflow.com/questions/2943847/
-
-.. note::
-
-    An alternative approach is to always execute scripts inside packages with
-    the `-m` flag set.  For example, to execute a script `module_name.py`,
-    which is in a subdirectory inside a package `pkg_toplevel`, you would use:
-
-    .. code:: bash
-
-       python -m pkg_toplevel.pkg_subdir.module_name
-       
-    This requires the full package name to be used, however, and has a
-    different invocation method than other scripts.  Also, the directory
-    containing the top-level package directory `pkg_toplevel` (i.e., its parent
-    directory) needs to be in Python's package search path in order for this
-    approach to work.
 
 .. note::
 

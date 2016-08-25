@@ -10,6 +10,7 @@ attribute of any script which imports it and calls the initialization function
 intra-package imports work for scripts inside packages.
 
 For full documentation, see https://abarker.github.io/set-package-attribute.
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Also available on PyPI for installation with pip.
 

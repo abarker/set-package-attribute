@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 # -*- encoding: utf-8 -*-
 """
-A setuptools-based setup module.
+
+A setuptools-based setup module (not distutils).
 
 See:
    https://packaging.python.org/en/latest/distributing.html

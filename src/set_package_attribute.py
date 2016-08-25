@@ -11,7 +11,7 @@ Importing `set_package_attribute` from such a script and running its `init`
 function will set the `__package__` attribute of the script's module (which is
 always `__main__`).  This is intended for use in any module inside a package which
 might ever be run as a script and which either uses intra-package imports or else
-imports other modules from within the same package which do.
+imports other modules from within the same package which do so.
 
 To use `set_package_attribute` just import it before any of the non-system
 files, inside any module that you might want to run as a script, and call the
@@ -31,10 +31,10 @@ The `init` function takes one optional boolean parameter, `mod_path`.  If it is
 set true then whenever the `__package__` attribute is set by `init` the first
 element of `sys.path` is also deleted.  This avoids some of the potential
 aliasing and shadowing problems that can arise when directories inside packages
-are added to `sys.path` (Python automatically inserts a script's directory as
-the first element of `sys.path`).  This is not guaranteed not to create other
-problems, but it works in test cases.  The default is false, i.e., `sys.path`
-is not modified.
+are added to `sys.path` (since Python automatically inserts a script's
+directory as the first element of `sys.path`).  This is not guaranteed not to
+create other problems, but it works in test cases.  The default is false, i.e.,
+`sys.path` is not modified.
 
 Even the use of absolute intra-package imports within a script requires that
 the package itself be discoverable on `sys.path`.  This module also takes care

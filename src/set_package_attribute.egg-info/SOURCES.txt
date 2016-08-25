@@ -1,0 +1,12 @@
+README.rst
+setup.cfg
+setup.py
+src/set_package_attribute.py
+src/set_package_attribute.egg-info/PKG-INFO
+src/set_package_attribute.egg-info/SOURCES.txt
+src/set_package_attribute.egg-info/dependency_links.txt
+src/set_package_attribute.egg-info/not-zip-safe
+src/set_package_attribute.egg-info/requires.txt
+src/set_package_attribute.egg-info/top_level.txt
+test/test_importing_package.py
+test/test_not_in_package.py

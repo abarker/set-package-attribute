@@ -60,7 +60,7 @@
 <span class="sd">function will set the `__package__` attribute of the script&#39;s module (which is</span>
 <span class="sd">always `__main__`).  This is intended for use in any module inside a package which</span>
 <span class="sd">might ever be run as a script and which either uses intra-package imports or else</span>
-<span class="sd">imports other modules from within the same package which do.</span>
+<span class="sd">imports other modules from within the same package which do so.</span>
 
 <span class="sd">To use `set_package_attribute` just import it before any of the non-system</span>
 <span class="sd">files, inside any module that you might want to run as a script, and call the</span>
@@ -80,10 +80,10 @@
 <span class="sd">set true then whenever the `__package__` attribute is set by `init` the first</span>
 <span class="sd">element of `sys.path` is also deleted.  This avoids some of the potential</span>
 <span class="sd">aliasing and shadowing problems that can arise when directories inside packages</span>
-<span class="sd">are added to `sys.path` (Python automatically inserts a script&#39;s directory as</span>
-<span class="sd">the first element of `sys.path`).  This is not guaranteed not to create other</span>
-<span class="sd">problems, but it works in test cases.  The default is false, i.e., `sys.path`</span>
-<span class="sd">is not modified.</span>
+<span class="sd">are added to `sys.path` (since Python automatically inserts a script&#39;s</span>
+<span class="sd">directory as the first element of `sys.path`).  This is not guaranteed not to</span>
+<span class="sd">create other problems, but it works in test cases.  The default is false, i.e.,</span>
+<span class="sd">`sys.path` is not modified.</span>
 
 <span class="sd">Even the use of absolute intra-package imports within a script requires that</span>
 <span class="sd">the package itself be discoverable on `sys.path`.  This module also takes care</span>

@@ -56,7 +56,7 @@ Importing <tt class="code docutils literal"><span class="pre">set_package_attrib
 function will set the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute of the script&#8217;s module (which is
 always <tt class="code docutils literal"><span class="pre">__main__</span></tt>).  This is intended for use in any module inside a package which
 might ever be run as a script and which either uses intra-package imports or else
-imports other modules from within the same package which do.</p>
+imports other modules from within the same package which do so.</p>
 <p>To use <tt class="code docutils literal"><span class="pre">set_package_attribute</span></tt> just import it before any of the non-system
 files, inside any module that you might want to run as a script, and call the
 <tt class="code docutils literal"><span class="pre">init</span></tt> function.  This should be done inside a guard conditional, so that it
@@ -74,10 +74,10 @@ within the same package which themselves use such imports.  Any previously-set
 set true then whenever the <tt class="code docutils literal"><span class="pre">__package__</span></tt> attribute is set by <tt class="code docutils literal"><span class="pre">init</span></tt> the first
 element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt> is also deleted.  This avoids some of the potential
 aliasing and shadowing problems that can arise when directories inside packages
-are added to <tt class="code docutils literal"><span class="pre">sys.path</span></tt> (Python automatically inserts a script&#8217;s directory as
-the first element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt>).  This is not guaranteed not to create other
-problems, but it works in test cases.  The default is false, i.e., <tt class="code docutils literal"><span class="pre">sys.path</span></tt>
-is not modified.</p>
+are added to <tt class="code docutils literal"><span class="pre">sys.path</span></tt> (since Python automatically inserts a script&#8217;s
+directory as the first element of <tt class="code docutils literal"><span class="pre">sys.path</span></tt>).  This is not guaranteed not to
+create other problems, but it works in test cases.  The default is false, i.e.,
+<tt class="code docutils literal"><span class="pre">sys.path</span></tt> is not modified.</p>
 <p>Even the use of absolute intra-package imports within a script requires that
 the package itself be discoverable on <tt class="code docutils literal"><span class="pre">sys.path</span></tt>.  This module also takes care
 of that, temporarily adding the directory containing the package&#8217;s root

@@ -27,14 +27,17 @@ within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
 `__package__` attribute (other than `None`) will be left unchanged.
 
-The `init` function takes one optional boolean parameter, `mod_path`.  If it is
-set true then whenever the `__package__` attribute is set by `init` the first
-element of `sys.path` is also deleted.  This avoids some of the potential
-aliasing and shadowing problems that can arise when directories inside packages
-are added to `sys.path` (since Python automatically inserts a script's
-directory as the first element of `sys.path`).  This is not guaranteed not to
-create other problems, but it works in test cases.  The default is false, i.e.,
-`sys.path` is not modified.
+The `init` function takes one optional boolean parameter, `mod_path`.  If
+`mod_path` is true then whenever the `__package__` attribute is set by `init`
+the first element of `sys.path` is also deleted.  This avoids some of the
+potential aliasing and shadowing problems that can arise when directories
+inside packages are added to `sys.path` (since Python automatically inserts a
+script's directory as the first element of `sys.path`).  This is not guaranteed
+not to create other problems, but it works in test cases.  The default is true,
+i.e., `sys.path` has the first element deleted by default on a call to `init`.
+If such a deletion is performed the `sys.path` entry is saved as
+`set_package_attribute.deleted_sys_path_0_value` for informational purposes
+(replacing the default `None` value).
 
 Even the use of absolute intra-package imports within a script requires that
 the package itself be discoverable on `sys.path`.  This module also takes care
@@ -91,7 +94,7 @@ Some notes:
   .. code:: bash
 
      python -m pkg_toplevel.pkg_subdir.module_name
-       
+
   This requires the full package name to be used, however, and has a
   different invocation method than other scripts.  Also, the directory
   containing the top-level package directory `pkg_toplevel` (i.e., its parent
@@ -135,7 +138,7 @@ directory containing the `__main__` module is then imported, using its
 fully-qualified name.  An entry for the `__main__` module is also added to
 `sys.modules` under its full package name.
 
-.. seealso:: 
+.. seealso::
 
     This module is based on the basic method described in the answers on this
     StackOverflow page: http://stackoverflow.com/questions/2943847/
@@ -156,11 +159,16 @@ Functions
 ---------
 """
 
+# TODO
+#
+# 1) Consider adding a module `set_package_attribute_direct` which only needs an import
+#    and just calls the default `init` function.  Lazy shortcut.
+
 from __future__ import print_function, division, absolute_import
 import os
 import sys
 
-def _set_package_attribute(mod_path=False):
+def _set_package_attribute(mod_path):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set."""
     # Get the module named __main__ from sys.modules.
@@ -182,7 +190,7 @@ def _set_package_attribute(mod_path=False):
         # Go up the directory tree to find the top-level package directory.
         dirname = script_dirname
         while os.path.exists(os.path.join(dirname, "__init__.py")):
-            dirname, name = os.path.split(dirname) 
+            dirname, name = os.path.split(dirname)
             parent_dirs.append(name)
 
         if parent_dirs: # Does nothing if no __init__.py file was found.
@@ -211,9 +219,20 @@ def _set_package_attribute(mod_path=False):
             #assert full_module_name in sys.modules # True
 
             #assert os.path.abspath(sys.path[0]) == script_dirname # True
-            if mod_path: del sys.path[0]
+            if mod_path:
+                _delete_sys_path_0()
 
-def init(mod_path=False):
+deleted_sys_path_0_value = None
+
+def _delete_sys_path_0():
+    """Delete the first entry on `sys.path`, but only if this routine has not deleted it
+    already."""
+    global deleted_sys_path_0_value
+    if deleted_sys_path_0_value is not None:
+        deleted_sys_path_0_value = sys.path[0]
+        del sys.path[0]
+
+def init(mod_path=True):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set.
 

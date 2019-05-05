@@ -3,6 +3,16 @@
 History
 =======
 
+0.1.2 (2019-05-05)
+------------------
+
+New Features:
+
+* The default of the ``mod_path`` argument to ``init`` is now ``True``.  If a
+  deletion is performed then the deleted ``sys.path[0]`` entry is saved as
+  ``set_package_attribute.deleted_sys_path_0_value`` for informational
+  purposes, replacing its default ``None`` value.
+
 0.1.1 (2016-07-11)
 ------------------
 

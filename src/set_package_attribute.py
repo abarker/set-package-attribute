@@ -27,6 +27,12 @@ within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
 `__package__` attribute (other than `None`) will be left unchanged.
 
+If you are happy with the default values to the `init` arguments then as a
+shortcut you can perform a single import which will call `init` automatically::
+
+   if __name__ == "__main__":
+       import set_package_attribute
+
 The `init` function takes one optional boolean parameter, `mod_path`.  If
 `mod_path` is true then whenever the `__package__` attribute is set by `init`
 the first element of `sys.path` is also deleted.  This avoids some of the

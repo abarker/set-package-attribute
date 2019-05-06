@@ -44,19 +44,20 @@ assert subsubdir_imp_1 is subsubdir_imp_2 is subsubdir_imp_3 is subsubdir_imp_4
 from .subsubdir_module import value
 assert subsubdir_imp_1.value is value
 
-# Below line works as a script but causes double import of module with above.
-# The script's dir is placed on sys.path, where it is found and re-imported
-# with a different name.  The import FAILS when this module is imported as a
-# regular package in Python 3, though, because it is not on sys.path and no
-# implicit relative imports are allowed.
-try:
-    from subsubdir_module import value
-except ImportError:
-    # As ordinary package, fail since absolue_import is used (from future for Py2).
-    # When run as script, fail since mod_path=True will remove the script's dir.
-    assert True
-else:
-    assert not "Import still worked after removing sys.path[0], is dir on path elsewhere?"
+## OBSOLETE test below (hopefully, May 2019).  Delete later if no further problems.
+## # Below line works as a script but causes double import of module with above.
+## # The script's dir is placed on sys.path, where it is found and re-imported
+## # with a different name.  The import FAILS when this module is imported as a
+## # regular package in Python 3, though, because it is not on sys.path and no
+## # implicit relative imports are allowed.
+## try:
+##     from subsubdir_module import value
+## except ImportError:
+##     # As ordinary package, fail since absolue_import is used (from future for Py2).
+##     # When run as script, fail since mod_path=True will remove the script's dir.
+##     assert True
+## else:
+##     assert not "Import still worked after removing sys.path[0], is dir on path elsewhere?"
 
 # When run as a script, make sure the package-qualified name is the same
 # module as __main__.

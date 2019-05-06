@@ -5,6 +5,11 @@
 # This is just a Bash script because most of the tests need to be run as
 # scripts.
 
+echo
+echo "If a test fails it will print an assertion error or raise some other exception."
+echo "If no such errors appear then all tests pass."
+echo
+
 for p in "python"
 do
    echo

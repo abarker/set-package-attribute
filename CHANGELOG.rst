@@ -13,6 +13,9 @@ New Features:
   ``set_package_attribute.deleted_sys_path_0_value`` for informational
   purposes, replacing its default ``None`` value.
 
+* A shortcut import ``set_package_attribute_magic`` was added which automatically
+  calls ``init`` with the default argument values.
+
 0.1.1 (2016-07-11)
 ------------------
 

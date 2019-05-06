@@ -1,33 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+    <meta charset="utf-8" />
     <title>set-package-attribute &#8212; set-package-attribute  documentation</title>
-    
     <link rel="stylesheet" href="_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="set-package-attribute  documentation" href="#" /> 
-  </head>
-  <body role="document">
+    <link rel="search" title="Search" href="search.html" /> 
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -53,88 +42,94 @@ explicit relative imports are used.</p>
 <span class="target" id="module-set_package_attribute"></span><div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
 <p>In order to run a module inside a package as a script and have explicit
-relative imports work, the <code class="code docutils literal"><span class="pre">__package__</span></code> attribute of the module should be set.
-Importing <code class="code docutils literal"><span class="pre">set_package_attribute</span></code> from such a script and running its <code class="code docutils literal"><span class="pre">init</span></code>
-function will set the <code class="code docutils literal"><span class="pre">__package__</span></code> attribute of the script&#8217;s module (which is
-always <code class="code docutils literal"><span class="pre">__main__</span></code>).  This is intended for use in any module inside a package which
+relative imports work, the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute of the module should be set.
+Importing <code class="code docutils literal notranslate"><span class="pre">set_package_attribute</span></code> from such a script and running its <code class="code docutils literal notranslate"><span class="pre">init</span></code>
+function will set the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute of the script’s module (which is
+always <code class="code docutils literal notranslate"><span class="pre">__main__</span></code>).  This is intended for use in any module inside a package which
 might ever be run as a script and which either uses intra-package imports or else
 imports other modules from within the same package which do so.</p>
-<p>To use <code class="code docutils literal"><span class="pre">set_package_attribute</span></code> just import it before any of the non-system
+<p>To use <code class="code docutils literal notranslate"><span class="pre">set_package_attribute</span></code> just import it before any of the non-system
 files, inside any module that you might want to run as a script, and call the
-<code class="code docutils literal"><span class="pre">init</span></code> function.  This should be done inside a guard conditional, so that it
+<code class="code docutils literal notranslate"><span class="pre">init</span></code> function.  This should be done inside a guard conditional, so that it
 only runs when the module is executed as a script:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">set_package_attribute</span>
     <span class="n">set_package_attribute</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Nothing else is required.  The <code class="code docutils literal"><span class="pre">init</span></code> function must be called <strong>before</strong> any
+<p>Nothing else is required.  The <code class="code docutils literal notranslate"><span class="pre">init</span></code> function must be called <strong>before</strong> any
 within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
-<code class="code docutils literal"><span class="pre">__package__</span></code> attribute (other than <code class="code docutils literal"><span class="pre">None</span></code>) will be left unchanged.</p>
-<p>The <code class="code docutils literal"><span class="pre">init</span></code> function takes one optional boolean parameter, <code class="code docutils literal"><span class="pre">mod_path</span></code>.  If it is
-set true then whenever the <code class="code docutils literal"><span class="pre">__package__</span></code> attribute is set by <code class="code docutils literal"><span class="pre">init</span></code> the first
-element of <code class="code docutils literal"><span class="pre">sys.path</span></code> is also deleted.  This avoids some of the potential
-aliasing and shadowing problems that can arise when directories inside packages
-are added to <code class="code docutils literal"><span class="pre">sys.path</span></code> (since Python automatically inserts a script&#8217;s
-directory as the first element of <code class="code docutils literal"><span class="pre">sys.path</span></code>).  This is not guaranteed not to
-create other problems, but it works in test cases.  The default is false, i.e.,
-<code class="code docutils literal"><span class="pre">sys.path</span></code> is not modified.</p>
+<code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute (other than <code class="code docutils literal notranslate"><span class="pre">None</span></code>) will be left unchanged.</p>
+<p>If you are happy with the default values to the <code class="code docutils literal notranslate"><span class="pre">init</span></code> arguments then as a
+shortcut you can perform a single import which will call <code class="code docutils literal notranslate"><span class="pre">init</span></code> automatically:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">set_package_attribute</span>
+</pre></div>
+</div>
+<p>The <code class="code docutils literal notranslate"><span class="pre">init</span></code> function takes one optional boolean parameter, <code class="code docutils literal notranslate"><span class="pre">mod_path</span></code>.  If
+<code class="code docutils literal notranslate"><span class="pre">mod_path</span></code> is true then whenever the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute is set by <code class="code docutils literal notranslate"><span class="pre">init</span></code>
+the first element of <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> is also deleted.  This avoids some of the
+potential aliasing and shadowing problems that can arise when directories
+inside packages are added to <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> (since Python automatically inserts a
+script’s directory as the first element of <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code>).  This is not guaranteed
+not to create other problems, but it works in test cases.  The default is true,
+i.e., <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> has the first element deleted by default on a call to <code class="code docutils literal notranslate"><span class="pre">init</span></code>.
+If such a deletion is performed the <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> entry is saved as
+<code class="code docutils literal notranslate"><span class="pre">set_package_attribute.deleted_sys_path_0_value</span></code> for informational purposes
+(replacing the default <code class="code docutils literal notranslate"><span class="pre">None</span></code> value).</p>
 <p>Even the use of absolute intra-package imports within a script requires that
-the package itself be discoverable on <code class="code docutils literal"><span class="pre">sys.path</span></code>.  This module also takes care
-of that, temporarily adding the directory containing the package&#8217;s root
-directory to <code class="code docutils literal"><span class="pre">sys.path</span></code> and then restoring the original <code class="code docutils literal"><span class="pre">sys.path</span></code> after doing
+the package itself be discoverable on <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code>.  This module also takes care
+of that, temporarily adding the directory containing the package’s root
+directory to <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> and then restoring the original <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> after doing
 the import.</p>
-<p>Another use of the <code class="code docutils literal"><span class="pre">set_package_attribute</span></code> module is that it allows explicit
+<p>Another use of the <code class="code docutils literal notranslate"><span class="pre">set_package_attribute</span></code> module is that it allows explicit
 relative imports to be used for intra-package imports in the main module of a
-Python application (i.e., in a Python application&#8217;s entry-point script).
+Python application (i.e., in a Python application’s entry-point script).
 Usually, <a class="reference external" href="https://docs.python.org/3/tutorial/modules.html#intra-package-references">as described in the Python documentation</a>,
 these imports should always be absolute imports.  That is, without the
-<code class="code docutils literal"><span class="pre">__package__</span></code> attribute being set such modules should generally only import
+<code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute being set such modules should generally only import
 intra-package modules by their full, package-qualified names (with the package
-itself being discoverable on <code class="code docutils literal"><span class="pre">sys.path</span></code>).  The guard conditional would not be
+itself being discoverable on <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code>).  The guard conditional would not be
 required in this case, assuming the entry-point module is only ever used to
 start the application and is not imported from another Python file.</p>
 <p>Some notes:</p>
 <ul>
-<li><p class="first">Internally, this module also needs to import the package directory
+<li><p>Internally, this module also needs to import the package directory
 containing the script module (under its full package-qualified name).  A
-side-effect of this is that any <code class="code docutils literal"><span class="pre">__init__.py</span></code> files in the package path down
+side-effect of this is that any <code class="code docutils literal notranslate"><span class="pre">__init__.py</span></code> files in the package path down
 to the script (from the top package level) will be executed.  Similarly, any
 modules you import as intra-package imports will cause the init files down to
 them to be run.  This could give unexpected results as compared with simply
 running the script not as a part of the package, depending on how
-<code class="code docutils literal"><span class="pre">__init__.py</span></code> files are used in a given package.  The effect is essentially
+<code class="code docutils literal notranslate"><span class="pre">__init__.py</span></code> files are used in a given package.  The effect is essentially
 the same as if the script file had been imported using its full,
-package-qualified module name.</p>
-</li>
-<li><p class="first">The basic mechanism still works if the guard conditional is left off.
+package-qualified module name.</p></li>
+<li><p>The basic mechanism still works if the guard conditional is left off.
 Without it, though, if a script in a <em>different</em> package were to explicitly
 or implicity import a module which itself imports and uses
-<code class="code docutils literal"><span class="pre">set_package_attribute</span></code>, a potential problem would occur.  This includes
-importing that module as part of its full package, say if the <code class="code docutils literal"><span class="pre">__init__.py</span></code>
+<code class="code docutils literal notranslate"><span class="pre">set_package_attribute</span></code>, a potential problem would occur.  This includes
+importing that module as part of its full package, say if the <code class="code docutils literal notranslate"><span class="pre">__init__.py</span></code>
 of that imported package imports the module (which happens quite often).
 This would have the side-effect of setting the package attribute of the
-<code class="code docutils literal"><span class="pre">__main__</span></code> module, which in this case is the module for a script in an
+<code class="code docutils literal notranslate"><span class="pre">__main__</span></code> module, which in this case is the module for a script in an
 entirely different package.  Often this would not cause a problem, since it
 would at least be set correctly, but it might result in unexpected behavior
-that could be difficult to trace.</p>
-</li>
-<li><p class="first">This only works for intra-package imports, i.e., for a module importing
+that could be difficult to trace.</p></li>
+<li><p>This only works for intra-package imports, i.e., for a module importing
 another module from within <em>its own</em> package.  You still cannot directly
 import a module from inside a <em>different</em> package and expect its
-intra-package imports to work.</p>
-</li>
-<li><p class="first">An alternative approach is to always execute scripts inside packages with
-the <code class="code docutils literal"><span class="pre">-m</span></code> flag set.  For example, to execute a script <code class="code docutils literal"><span class="pre">module_name.py</span></code>,
-which is in a subdirectory inside a package <code class="code docutils literal"><span class="pre">pkg_toplevel</span></code>, you would use:</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">pkg_toplevel</span><span class="o">.</span><span class="n">pkg_subdir</span><span class="o">.</span><span class="n">module_name</span>
+intra-package imports to work.</p></li>
+<li><p>An alternative approach is to always execute scripts inside packages with
+the <code class="code docutils literal notranslate"><span class="pre">-m</span></code> flag set.  For example, to execute a script <code class="code docutils literal notranslate"><span class="pre">module_name.py</span></code>,
+which is in a subdirectory inside a package <code class="code docutils literal notranslate"><span class="pre">pkg_toplevel</span></code>, you would use:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m pkg_toplevel.pkg_subdir.module_name
 </pre></div>
 </div>
 <p>This requires the full package name to be used, however, and has a
 different invocation method than other scripts.  Also, the directory
-containing the top-level package directory <code class="code docutils literal"><span class="pre">pkg_toplevel</span></code> (i.e., its parent
-directory) needs to be in Python&#8217;s package search path in order for this
+containing the top-level package directory <code class="code docutils literal notranslate"><span class="pre">pkg_toplevel</span></code> (i.e., its parent
+directory) needs to be in Python’s package search path in order for this
 approach to work.</p>
 </li>
 </ul>
@@ -142,12 +137,12 @@ approach to work.</p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>The simplest way to install is to use pip:</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="nb">set</span><span class="o">-</span><span class="n">package</span><span class="o">-</span><span class="n">attribute</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install set-package-attribute
 </pre></div>
 </div>
 <p>The module can also be installed by <a class="reference external" href="https://github.com/abarker/set-package-attribute">downloading it</a> or cloning it from GitHub
-and running its <code class="code docutils literal"><span class="pre">setup.py</span></code> file in the usual way.  The clone command is:</p>
-<div class="code bash highlight-default"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">abarker</span><span class="o">/</span><span class="nb">set</span><span class="o">-</span><span class="n">package</span><span class="o">-</span><span class="n">attribute</span>
+and running its <code class="code docutils literal notranslate"><span class="pre">setup.py</span></code> file in the usual way.  The clone command is:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/abarker/set-package-attribute
 </pre></div>
 </div>
 <p>The distribution currently consists of a single module, which could also simply
@@ -155,30 +150,30 @@ be copied to somewhere in the Python path (to avoid adding a dependency).</p>
 </div>
 <div class="section" id="further-details">
 <h2>Further details<a class="headerlink" href="#further-details" title="Permalink to this headline">¶</a></h2>
-<p>When <code class="code docutils literal"><span class="pre">init</span></code> is run this module searches for the module <code class="code docutils literal"><span class="pre">__main__</span></code> in
-<code class="code docutils literal"><span class="pre">sys.modules</span></code>.  If that module is not found then nothing is done.  If
-<code class="code docutils literal"><span class="pre">__main__</span></code> is found then the <code class="code docutils literal"><span class="pre">__package__</span></code> attribute for the <code class="code docutils literal"><span class="pre">__main__</span></code> module
+<p>When <code class="code docutils literal notranslate"><span class="pre">init</span></code> is run this module searches for the module <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> in
+<code class="code docutils literal notranslate"><span class="pre">sys.modules</span></code>.  If that module is not found then nothing is done.  If
+<code class="code docutils literal notranslate"><span class="pre">__main__</span></code> is found then the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute for the <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> module
 is computed by going up the directory tree from its source file, looking for
-<code class="code docutils literal"><span class="pre">__init__.py</span></code> files.  The <code class="code docutils literal"><span class="pre">__package__</span></code> attribute is then set in the <code class="code docutils literal"><span class="pre">__main__</span></code>
-module&#8217;s namespace.  Only the <code class="code docutils literal"><span class="pre">__main__</span></code> module is ever modified.  If there is
-already a <code class="code docutils literal"><span class="pre">__package__</span></code> attribute in the namespace of <code class="code docutils literal"><span class="pre">__main__</span></code> then nothing
+<code class="code docutils literal notranslate"><span class="pre">__init__.py</span></code> files.  The <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute is then set in the <code class="code docutils literal notranslate"><span class="pre">__main__</span></code>
+module’s namespace.  Only the <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> module is ever modified.  If there is
+already a <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute in the namespace of <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> then nothing
 is done.</p>
-<p>After setting the <code class="code docutils literal"><span class="pre">__package__</span></code> attribute in the <code class="code docutils literal"><span class="pre">__main__</span></code> module the package
-directory containing the <code class="code docutils literal"><span class="pre">__main__</span></code> module is then imported, using its
-fully-qualified name.  An entry for the <code class="code docutils literal"><span class="pre">__main__</span></code> module is also added to
-<code class="code docutils literal"><span class="pre">sys.modules</span></code> under its full package name.</p>
+<p>After setting the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute in the <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> module the package
+directory containing the <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> module is then imported, using its
+fully-qualified name.  An entry for the <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> module is also added to
+<code class="code docutils literal notranslate"><span class="pre">sys.modules</span></code> under its full package name.</p>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last">This module is based on the basic method described in the answers on this
+<p class="admonition-title">See also</p>
+<p>This module is based on the basic method described in the answers on this
 StackOverflow page: <a class="reference external" href="http://stackoverflow.com/questions/2943847/">http://stackoverflow.com/questions/2943847/</a></p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">As of 2007 Guido van Rossum viewed running scripts that are inside packages
+<p class="admonition-title">Note</p>
+<p>As of 2007 Guido van Rossum viewed running scripts that are inside packages
 as an anti-pattern (see
 <a class="reference external" href="https://mail.python.org/pipermail/python-3000/2007-April/006793.html">https://mail.python.org/pipermail/python-3000/2007-April/006793.html</a>).
 Nevertheless, it can be a convenient and useful pattern in certain
-situations.  He did later approve PEP 366, which defined the <code class="code docutils literal"><span class="pre">__package__</span></code>
+situations.  He did later approve PEP 366, which defined the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code>
 attribute to handle the situation.</p>
 </div>
 </div>
@@ -186,11 +181,11 @@ attribute to handle the situation.</p>
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="set_package_attribute.init">
-<code class="descclassname">set_package_attribute.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mod_path=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/set_package_attribute.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#set_package_attribute.init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the <code class="code docutils literal"><span class="pre">__package__</span></code> attribute of the module <code class="code docutils literal"><span class="pre">__main__</span></code> if it is not
+<code class="descclassname">set_package_attribute.</code><code class="descname">init</code><span class="sig-paren">(</span><em>mod_path=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/set_package_attribute.html#init"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#set_package_attribute.init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute of the module <code class="code docutils literal notranslate"><span class="pre">__main__</span></code> if it is not
 already set.</p>
-<p>If <code class="code docutils literal"><span class="pre">mod_path</span></code> is true then whenever the <code class="code docutils literal"><span class="pre">__package__</span></code> attribute is set
-the first element of <code class="code docutils literal"><span class="pre">sys.path</span></code> (the current
+<p>If <code class="code docutils literal notranslate"><span class="pre">mod_path</span></code> is true then whenever the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute is set
+the first element of <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> (the current
 directory of the script) is also deleted from the path list.</p>
 </dd></dl>
 
@@ -203,7 +198,7 @@ directory of the script) is also deleted from the path list.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
+  <h3><a href="#">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">set-package-attribute</a><ul>
 <li><a class="reference internal" href="#description">Description</a></li>
@@ -217,18 +212,18 @@ directory of the script) is also deleted from the path list.</p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="_sources/index.txt"
+      <li><a href="_sources/index.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -249,7 +244,7 @@ directory of the script) is also deleted from the path list.</p>
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Allen Barker.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
     </div>
   </body>
 </html>

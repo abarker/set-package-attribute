@@ -1,34 +1,22 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
+    <meta charset="utf-8" />
     <title>set_package_attribute &#8212; set-package-attribute  documentation</title>
-    
     <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="top" title="set-package-attribute  documentation" href="../index.html" />
-    <link rel="up" title="Module code" href="index.html" /> 
-  </head>
-  <body role="document">
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -78,14 +66,23 @@
 <span class="sd">within the same package which themselves use such imports.  Any previously-set</span>
 <span class="sd">`__package__` attribute (other than `None`) will be left unchanged.</span>
 
-<span class="sd">The `init` function takes one optional boolean parameter, `mod_path`.  If it is</span>
-<span class="sd">set true then whenever the `__package__` attribute is set by `init` the first</span>
-<span class="sd">element of `sys.path` is also deleted.  This avoids some of the potential</span>
-<span class="sd">aliasing and shadowing problems that can arise when directories inside packages</span>
-<span class="sd">are added to `sys.path` (since Python automatically inserts a script&#39;s</span>
-<span class="sd">directory as the first element of `sys.path`).  This is not guaranteed not to</span>
-<span class="sd">create other problems, but it works in test cases.  The default is false, i.e.,</span>
-<span class="sd">`sys.path` is not modified.</span>
+<span class="sd">If you are happy with the default values to the `init` arguments then as a</span>
+<span class="sd">shortcut you can perform a single import which will call `init` automatically::</span>
+
+<span class="sd">   if __name__ == &quot;__main__&quot;:</span>
+<span class="sd">       import set_package_attribute</span>
+
+<span class="sd">The `init` function takes one optional boolean parameter, `mod_path`.  If</span>
+<span class="sd">`mod_path` is true then whenever the `__package__` attribute is set by `init`</span>
+<span class="sd">the first element of `sys.path` is also deleted.  This avoids some of the</span>
+<span class="sd">potential aliasing and shadowing problems that can arise when directories</span>
+<span class="sd">inside packages are added to `sys.path` (since Python automatically inserts a</span>
+<span class="sd">script&#39;s directory as the first element of `sys.path`).  This is not guaranteed</span>
+<span class="sd">not to create other problems, but it works in test cases.  The default is true,</span>
+<span class="sd">i.e., `sys.path` has the first element deleted by default on a call to `init`.</span>
+<span class="sd">If such a deletion is performed the `sys.path` entry is saved as</span>
+<span class="sd">`set_package_attribute.deleted_sys_path_0_value` for informational purposes</span>
+<span class="sd">(replacing the default `None` value).</span>
 
 <span class="sd">Even the use of absolute intra-package imports within a script requires that</span>
 <span class="sd">the package itself be discoverable on `sys.path`.  This module also takes care</span>
@@ -142,7 +139,7 @@
 <span class="sd">  .. code:: bash</span>
 
 <span class="sd">     python -m pkg_toplevel.pkg_subdir.module_name</span>
-<span class="sd">       </span>
+
 <span class="sd">  This requires the full package name to be used, however, and has a</span>
 <span class="sd">  different invocation method than other scripts.  Also, the directory</span>
 <span class="sd">  containing the top-level package directory `pkg_toplevel` (i.e., its parent</span>
@@ -186,7 +183,7 @@
 <span class="sd">fully-qualified name.  An entry for the `__main__` module is also added to</span>
 <span class="sd">`sys.modules` under its full package name.</span>
 
-<span class="sd">.. seealso:: </span>
+<span class="sd">.. seealso::</span>
 
 <span class="sd">    This module is based on the basic method described in the answers on this</span>
 <span class="sd">    StackOverflow page: http://stackoverflow.com/questions/2943847/</span>
@@ -207,11 +204,16 @@
 <span class="sd">---------</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="c1"># TODO</span>
+<span class="c1">#</span>
+<span class="c1"># 1) Consider adding a module `set_package_attribute_direct` which only needs an import</span>
+<span class="c1">#    and just calls the default `init` function.  Lazy shortcut.</span>
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="k">def</span> <span class="nf">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.&quot;&quot;&quot;</span>
     <span class="c1"># Get the module named __main__ from sys.modules.</span>
@@ -224,7 +226,7 @@
     <span class="c1"># Do nothing unless the program was started from a script.</span>
     <span class="k">if</span> <span class="n">main_found</span> <span class="ow">and</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__package__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
-        <span class="n">importing_file</span> <span class="o">=</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__file__</span>
+        <span class="n">importing_file</span> <span class="o">=</span> <span class="n">main_module</span><span class="o">.</span><span class="vm">__file__</span>
         <span class="n">script_dirname</span><span class="p">,</span> <span class="n">script_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
                                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">importing_file</span><span class="p">)))</span>
         <span class="n">script_module_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -233,7 +235,7 @@
         <span class="c1"># Go up the directory tree to find the top-level package directory.</span>
         <span class="n">dirname</span> <span class="o">=</span> <span class="n">script_dirname</span>
         <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">)):</span>
-            <span class="n">dirname</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span> 
+            <span class="n">dirname</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span>
             <span class="n">parent_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">parent_dirs</span><span class="p">:</span> <span class="c1"># Does nothing if no __init__.py file was found.</span>
@@ -262,9 +264,20 @@
             <span class="c1">#assert full_module_name in sys.modules # True</span>
 
             <span class="c1">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
-            <span class="k">if</span> <span class="n">mod_path</span><span class="p">:</span> <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">mod_path</span><span class="p">:</span>
+                <span class="n">_delete_sys_path_0</span><span class="p">()</span>
 
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="n">deleted_sys_path_0_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">def</span> <span class="nf">_delete_sys_path_0</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Delete the first entry on `sys.path`, but only if this routine has not deleted it</span>
+<span class="sd">    already.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">deleted_sys_path_0_value</span>
+    <span class="k">if</span> <span class="n">deleted_sys_path_0_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">deleted_sys_path_0_value</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.</span>
 
@@ -282,12 +295,12 @@
         <div class="sphinxsidebarwrapper">
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -309,7 +322,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &#169; Copyright 2016, Allen Barker.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.0.1.
     </div>
   </body>
 </html>

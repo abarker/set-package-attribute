@@ -165,10 +165,12 @@ Functions
 ---------
 """
 
-# TODO
+# TODO:
 #
-# 1) Consider adding a module `set_package_attribute_direct` which only needs an import
-#    and just calls the default `init` function.  Lazy shortcut.
+# Maybe: the set_package_attribute_magic could introspect to find the calling module,
+# like pytest-helper, and test itself whether it is `__main__`.  That adds a little
+# overhead at startup, but if used inside a guard conditional it only runs when actually
+# running as a script.  Adding this would be backward compatible, so no rush.
 
 from __future__ import print_function, division, absolute_import
 import os

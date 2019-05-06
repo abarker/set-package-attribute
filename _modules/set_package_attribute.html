@@ -6,9 +6,9 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>set_package_attribute &mdash; set-package-attribute  documentation</title>
+    <title>set_package_attribute &#8212; set-package-attribute  documentation</title>
     
-    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -23,11 +23,13 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="top" title="set-package-attribute  documentation" href="../index.html" />
     <link rel="up" title="Module code" href="index.html" /> 
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -36,18 +38,18 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">set-package-attribute  documentation</a> &raquo;</li>
-          <li><a href="index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">set-package-attribute  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <h1>Source code for set_package_attribute</h1><div class="highlight"><pre>
-<span class="c"># -*- coding: utf-8 -*-</span>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">.. default-role:: code</span>
 
@@ -205,96 +207,94 @@
 <span class="sd">---------</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="k">def</span> <span class="nf">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.&quot;&quot;&quot;</span>
-    <span class="c"># Get the module named __main__ from sys.modules.</span>
-    <span class="n">main_found</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="c1"># Get the module named __main__ from sys.modules.</span>
+    <span class="n">main_found</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">main_module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s">&quot;__main__&quot;</span><span class="p">]</span>
+        <span class="n">main_module</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s2">&quot;__main__&quot;</span><span class="p">]</span>
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-        <span class="n">main_found</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">main_found</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="c"># Do nothing unless the program was started from a script.</span>
-    <span class="k">if</span> <span class="n">main_found</span> <span class="ow">and</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__package__</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="c1"># Do nothing unless the program was started from a script.</span>
+    <span class="k">if</span> <span class="n">main_found</span> <span class="ow">and</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__package__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="n">importing_file</span> <span class="o">=</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__file__</span>
         <span class="n">script_dirname</span><span class="p">,</span> <span class="n">script_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
                                <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">importing_file</span><span class="p">)))</span>
         <span class="n">script_module_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">script_filename</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">parent_dirs</span> <span class="o">=</span> <span class="p">[]</span> <span class="c"># A reversed list of package name parts, to build up.</span>
+        <span class="n">parent_dirs</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># A reversed list of package name parts, to build up.</span>
 
-        <span class="c"># Go up the directory tree to find the top-level package directory.</span>
+        <span class="c1"># Go up the directory tree to find the top-level package directory.</span>
         <span class="n">dirname</span> <span class="o">=</span> <span class="n">script_dirname</span>
-        <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s">&quot;__init__.py&quot;</span><span class="p">)):</span>
+        <span class="k">while</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dirname</span><span class="p">,</span> <span class="s2">&quot;__init__.py&quot;</span><span class="p">)):</span>
             <span class="n">dirname</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span> 
             <span class="n">parent_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">parent_dirs</span><span class="p">:</span> <span class="c"># Does nothing if no __init__.py file was found.</span>
+        <span class="k">if</span> <span class="n">parent_dirs</span><span class="p">:</span> <span class="c1"># Does nothing if no __init__.py file was found.</span>
 
-            <span class="c"># Build the name of the subpackage the &quot;__main__&quot; module is in, and set</span>
-            <span class="c"># the __package__ variable to it.</span>
-            <span class="c"># Note: the subpackage name does not include the name of the module itself.</span>
-            <span class="n">full_subpackage_name</span> <span class="o">=</span> <span class="s">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">parent_dirs</span><span class="p">))</span>
+            <span class="c1"># Build the name of the subpackage the &quot;__main__&quot; module is in, and set</span>
+            <span class="c1"># the __package__ variable to it.</span>
+            <span class="c1"># Note: the subpackage name does not include the name of the module itself.</span>
+            <span class="n">full_subpackage_name</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">parent_dirs</span><span class="p">))</span>
             <span class="n">main_module</span><span class="o">.</span><span class="n">__package__</span> <span class="o">=</span> <span class="n">full_subpackage_name</span>
 
-            <span class="c"># Now do the actual import of the subpackage.</span>
-            <span class="c"># Note: the script&#39;s module loads and initializes *twice* if you import</span>
-            <span class="c"># full_module_name rather than subpackage_module!</span>
+            <span class="c1"># Now do the actual import of the subpackage.</span>
+            <span class="c1"># Note: the script&#39;s module loads and initializes *twice* if you import</span>
+            <span class="c1"># full_module_name rather than subpackage_module!</span>
 
-            <span class="c"># Normally you insert to sys.path as position one, leaving the script&#39;s</span>
-            <span class="c"># directory in position zero.  Here, though, it is temporary and we want</span>
-            <span class="c"># to avoid name shadowing so we insert at position zero.</span>
+            <span class="c1"># Normally you insert to sys.path as position one, leaving the script&#39;s</span>
+            <span class="c1"># directory in position zero.  Here, though, it is temporary and we want</span>
+            <span class="c1"># to avoid name shadowing so we insert at position zero.</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">dirname</span><span class="p">)</span>
             <span class="n">subpackage_module</span> <span class="o">=</span> <span class="nb">__import__</span><span class="p">(</span><span class="n">full_subpackage_name</span><span class="p">)</span>
-            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c"># Remove the added path; no longer needed.</span>
+            <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># Remove the added path; no longer needed.</span>
 
-            <span class="c">#assert full_subpackage_name in sys.modules # True</span>
-            <span class="n">full_module_name</span> <span class="o">=</span> <span class="n">full_subpackage_name</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">script_module_name</span>
-            <span class="c">#assert full_module_name not in sys.modules # True</span>
+            <span class="c1">#assert full_subpackage_name in sys.modules # True</span>
+            <span class="n">full_module_name</span> <span class="o">=</span> <span class="n">full_subpackage_name</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">script_module_name</span>
+            <span class="c1">#assert full_module_name not in sys.modules # True</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">full_module_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_module</span>
-            <span class="c">#assert full_module_name in sys.modules # True</span>
+            <span class="c1">#assert full_module_name in sys.modules # True</span>
 
-            <span class="c">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
+            <span class="c1">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
             <span class="k">if</span> <span class="n">mod_path</span><span class="p">:</span> <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.</span>
 
 <span class="sd">    If `mod_path` is true then whenever the `__package__` attribute is set</span>
 <span class="sd">    the first element of `sys.path` (the current</span>
 <span class="sd">    directory of the script) is also deleted from the path list.&quot;&quot;&quot;</span>
-    <span class="n">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="n">mod_path</span><span class="p">)</span>
-</pre></div></div>
+    <span class="n">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="n">mod_path</span><span class="p">)</span></div>
+
+</pre></div>
 
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-<div id="searchbox" style="display: none">
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -303,13 +303,13 @@
         <li class="right" >
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../index.html">set-package-attribute  documentation</a> &raquo;</li>
-          <li><a href="index.html" >Module code</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">set-package-attribute  documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li> 
       </ul>
     </div>
-    <div class="footer">
-        &copy; Copyright 2016, Allen Barker.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2016, Allen Barker.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.8.
     </div>
   </body>
 </html>

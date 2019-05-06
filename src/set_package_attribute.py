@@ -31,7 +31,7 @@ If you are happy with the default values to the `init` arguments then as a
 shortcut you can perform a single import which will call `init` automatically::
 
    if __name__ == "__main__":
-       import set_package_attribute
+       import set_package_attribute_magic
 
 The `init` function takes one optional boolean parameter, `mod_path`.  If
 `mod_path` is true then whenever the `__package__` attribute is set by `init`

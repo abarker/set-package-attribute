@@ -63,7 +63,28 @@ itself being discoverable on `sys.path`).  The guard conditional would not be
 required in this case, assuming the entry-point module is only ever used to
 start the application and is not imported from another Python file.
 
-Some notes:
+Installation
+------------
+
+The simplest way to install is to use pip:
+
+.. code:: bash
+
+   pip install set-package-attribute
+
+The module can also be installed by `downloading it
+<https://github.com/abarker/set-package-attribute>`_ or cloning it from GitHub
+and running its `setup.py` file in the usual way.  The clone command is:
+
+.. code:: bash
+
+   git clone https://github.com/abarker/set-package-attribute
+
+The distribution currently consists of a single module, which could also simply
+be copied to somewhere in the Python path (to avoid adding a dependency).
+
+Some technical notes
+--------------------
 
 * Internally, this module also needs to import the package directory
   containing the script module (under its full package-qualified name).  A
@@ -77,8 +98,8 @@ Some notes:
   package-qualified module name.
 
 * The basic mechanism still works if the guard conditional is left off.
-  Without it, though, if a script in a *different* package were to explicitly
-  or implicity import a module which itself imports and uses
+  Without it, though, if a script in a *different* package/project were to
+  explicitly or implicity import a module which itself imports and uses
   `set_package_attribute`, a potential problem would occur.  This includes
   importing that module as part of its full package, say if the `__init__.py`
   of that imported package imports the module (which happens quite often).
@@ -106,26 +127,6 @@ Some notes:
   containing the top-level package directory `pkg_toplevel` (i.e., its parent
   directory) needs to be in Python's package search path in order for this
   approach to work.
-
-Installation
-------------
-
-The simplest way to install is to use pip:
-
-.. code:: bash
-
-   pip install set-package-attribute
-
-The module can also be installed by `downloading it
-<https://github.com/abarker/set-package-attribute>`_ or cloning it from GitHub
-and running its `setup.py` file in the usual way.  The clone command is:
-
-.. code:: bash
-
-   git clone https://github.com/abarker/set-package-attribute
-
-The distribution currently consists of a single module, which could also simply
-be copied to somewhere in the Python path (to avoid adding a dependency).
 
 Further details
 ---------------

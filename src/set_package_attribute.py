@@ -25,7 +25,8 @@ only runs when the module is executed as a script::
 Nothing else is required.  The `init` function must be called **before** any
 within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
-`__package__` attribute (other than `None`) will be left unchanged.
+`__package__` attribute (other than `None`) will be left unchanged, so running
+the `init` twice is the same as running it once.
 
 If you are happy with the default values to the `init` arguments then as a
 shortcut you can perform a single import which will call `init` automatically::
@@ -34,9 +35,9 @@ shortcut you can perform a single import which will call `init` automatically::
        import set_package_attribute_magic
 
 The `init` function takes one optional boolean parameter, `modify_syspath`.  If
-`modify_syspath` is true then whenever the `__package__` attribute is set by `init`
-the first element of `sys.path` is also deleted.  This avoids some of the
-potential aliasing and shadowing problems that can arise when directories
+`modify_syspath` is true then whenever the `__package__` attribute is set by
+`init` the first element of `sys.path` is also deleted.  This avoids some of
+the potential aliasing and shadowing problems that can arise when directories
 inside packages are added to `sys.path` (since Python automatically inserts a
 script's directory as the first element of `sys.path`).  This is not guaranteed
 not to create other problems, but it works in test cases.  The default is true,
@@ -177,8 +178,6 @@ from __future__ import print_function, division, absolute_import
 import os
 import sys
 
-already_set_attribute = False # Used to avoid problems if called twice.
-
 def _set_package_attribute(modify_syspath):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set."""
@@ -189,7 +188,7 @@ def _set_package_attribute(modify_syspath):
     except KeyError:
         main_found = False
 
-    # Do nothing unless the program was started from a script.
+    # Do nothing unless the program was started from a script and no __package__ is set.
     if main_found and main_module.__package__ is None:
 
         importing_file = main_module.__file__
@@ -209,32 +208,28 @@ def _set_package_attribute(modify_syspath):
             if modify_syspath:
                 _delete_sys_path_0()
 
-            global already_set_attribute
-            if not already_set_attribute:
-                # Build the name of the subpackage the "__main__" module is in, and set
-                # the __package__ variable to it.
-                # Note: the subpackage name does not include the name of the module itself.
-                full_subpackage_name = ".".join(reversed(parent_dirs))
-                main_module.__package__ = full_subpackage_name
+            # Build the name of the subpackage the "__main__" module is in, and set
+            # the __package__ variable to it.
+            # Note: the subpackage name does not include the name of the module itself.
+            full_subpackage_name = ".".join(reversed(parent_dirs))
+            main_module.__package__ = full_subpackage_name
 
-                # Now do the actual import of the subpackage.
-                # Note: the script's module loads and initializes *twice* if you import
-                # full_module_name rather than subpackage_module!
+            # Now do the actual import of the subpackage.
+            # Note: the script's module loads and initializes *twice* if you import
+            # full_module_name rather than subpackage_module!
 
-                # Normally you insert to sys.path as position one, leaving the script's
-                # directory in position zero.  Here, though, it is temporary and we want
-                # to avoid name shadowing so we insert at position zero.
-                sys.path.insert(0, dirname)
-                subpackage_module = __import__(full_subpackage_name)
-                del sys.path[0] # Remove the added path; no longer needed.
+            # Normally you insert to sys.path as position one, leaving the script's
+            # directory in position zero.  Here, though, it is temporary and we want
+            # to avoid name shadowing so we insert at position zero.
+            sys.path.insert(0, dirname)
+            subpackage_module = __import__(full_subpackage_name)
+            del sys.path[0] # Remove the added path; no longer needed.
 
-                #assert full_subpackage_name in sys.modules # True
-                full_module_name = full_subpackage_name + "." + script_module_name
-                #assert full_module_name not in sys.modules # True
-                sys.modules[full_module_name] = main_module
-                #assert full_module_name in sys.modules # True
-
-            already_set_attribute = True
+            #assert full_subpackage_name in sys.modules # True
+            full_module_name = full_subpackage_name + "." + script_module_name
+            #assert full_module_name not in sys.modules # True
+            sys.modules[full_module_name] = main_module
+            #assert full_module_name in sys.modules # True
 
 deleted_sys_path_0_value = None
 

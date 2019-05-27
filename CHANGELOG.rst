@@ -3,6 +3,11 @@
 History
 =======
 
+0.2.3 (2019-05-27)
+------------------
+
+Reverted previous changes in 0.2.2 since they were redundant.  Updated docs.
+
 0.2.2 (2019-05-27)
 ------------------
 

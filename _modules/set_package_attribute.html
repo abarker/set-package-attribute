@@ -64,7 +64,8 @@
 <span class="sd">Nothing else is required.  The `init` function must be called **before** any</span>
 <span class="sd">within-package explicit relative imports, and before importing any modules from</span>
 <span class="sd">within the same package which themselves use such imports.  Any previously-set</span>
-<span class="sd">`__package__` attribute (other than `None`) will be left unchanged.</span>
+<span class="sd">`__package__` attribute (other than `None`) will be left unchanged, so running</span>
+<span class="sd">the `init` twice is the same as running it once.</span>
 
 <span class="sd">If you are happy with the default values to the `init` arguments then as a</span>
 <span class="sd">shortcut you can perform a single import which will call `init` automatically::</span>
@@ -73,9 +74,9 @@
 <span class="sd">       import set_package_attribute_magic</span>
 
 <span class="sd">The `init` function takes one optional boolean parameter, `modify_syspath`.  If</span>
-<span class="sd">`modify_syspath` is true then whenever the `__package__` attribute is set by `init`</span>
-<span class="sd">the first element of `sys.path` is also deleted.  This avoids some of the</span>
-<span class="sd">potential aliasing and shadowing problems that can arise when directories</span>
+<span class="sd">`modify_syspath` is true then whenever the `__package__` attribute is set by</span>
+<span class="sd">`init` the first element of `sys.path` is also deleted.  This avoids some of</span>
+<span class="sd">the potential aliasing and shadowing problems that can arise when directories</span>
 <span class="sd">inside packages are added to `sys.path` (since Python automatically inserts a</span>
 <span class="sd">script&#39;s directory as the first element of `sys.path`).  This is not guaranteed</span>
 <span class="sd">not to create other problems, but it works in test cases.  The default is true,</span>
@@ -111,9 +112,9 @@
 
 <span class="sd">   pip install set-package-attribute</span>
 
-<span class="sd">The module can also be installed by `downloading it</span>
-<span class="sd">&lt;https://github.com/abarker/set-package-attribute&gt;`_ or cloning it from GitHub</span>
-<span class="sd">and running its `setup.py` file in the usual way.  The clone command is:</span>
+<span class="sd">The module can also be installed by `downloading it or cloning it from GitHub</span>
+<span class="sd">&lt;https://github.com/abarker/set-package-attribute&gt;`_ and running its `setup.py`</span>
+<span class="sd">file in the usual way.  The clone command is:</span>
 
 <span class="sd">.. code:: bash</span>
 
@@ -226,7 +227,7 @@
     <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
         <span class="n">main_found</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="c1"># Do nothing unless the program was started from a script.</span>
+    <span class="c1"># Do nothing unless the program was started from a script and no __package__ is set.</span>
     <span class="k">if</span> <span class="n">main_found</span> <span class="ow">and</span> <span class="n">main_module</span><span class="o">.</span><span class="n">__package__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
 
         <span class="n">importing_file</span> <span class="o">=</span> <span class="n">main_module</span><span class="o">.</span><span class="vm">__file__</span>
@@ -242,6 +243,9 @@
             <span class="n">parent_dirs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">parent_dirs</span><span class="p">:</span> <span class="c1"># Does nothing if no __init__.py file was found.</span>
+            <span class="c1">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
+            <span class="k">if</span> <span class="n">modify_syspath</span><span class="p">:</span>
+                <span class="n">_delete_sys_path_0</span><span class="p">()</span>
 
             <span class="c1"># Build the name of the subpackage the &quot;__main__&quot; module is in, and set</span>
             <span class="c1"># the __package__ variable to it.</span>
@@ -265,10 +269,6 @@
             <span class="c1">#assert full_module_name not in sys.modules # True</span>
             <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">full_module_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_module</span>
             <span class="c1">#assert full_module_name in sys.modules # True</span>
-
-            <span class="c1">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
-            <span class="k">if</span> <span class="n">modify_syspath</span><span class="p">:</span>
-                <span class="n">_delete_sys_path_0</span><span class="p">()</span>
 
 <span class="n">deleted_sys_path_0_value</span> <span class="o">=</span> <span class="kc">None</span>
 

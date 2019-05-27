@@ -60,7 +60,8 @@ only runs when the module is executed as a script:</p>
 <p>Nothing else is required.  The <code class="code docutils literal notranslate"><span class="pre">init</span></code> function must be called <strong>before</strong> any
 within-package explicit relative imports, and before importing any modules from
 within the same package which themselves use such imports.  Any previously-set
-<code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute (other than <code class="code docutils literal notranslate"><span class="pre">None</span></code>) will be left unchanged.</p>
+<code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute (other than <code class="code docutils literal notranslate"><span class="pre">None</span></code>) will be left unchanged, so running
+the <code class="code docutils literal notranslate"><span class="pre">init</span></code> twice is the same as running it once.</p>
 <p>If you are happy with the default values to the <code class="code docutils literal notranslate"><span class="pre">init</span></code> arguments then as a
 shortcut you can perform a single import which will call <code class="code docutils literal notranslate"><span class="pre">init</span></code> automatically:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
@@ -68,9 +69,9 @@ shortcut you can perform a single import which will call <code class="code docut
 </pre></div>
 </div>
 <p>The <code class="code docutils literal notranslate"><span class="pre">init</span></code> function takes one optional boolean parameter, <code class="code docutils literal notranslate"><span class="pre">modify_syspath</span></code>.  If
-<code class="code docutils literal notranslate"><span class="pre">modify_syspath</span></code> is true then whenever the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute is set by <code class="code docutils literal notranslate"><span class="pre">init</span></code>
-the first element of <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> is also deleted.  This avoids some of the
-potential aliasing and shadowing problems that can arise when directories
+<code class="code docutils literal notranslate"><span class="pre">modify_syspath</span></code> is true then whenever the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute is set by
+<code class="code docutils literal notranslate"><span class="pre">init</span></code> the first element of <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> is also deleted.  This avoids some of
+the potential aliasing and shadowing problems that can arise when directories
 inside packages are added to <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code> (since Python automatically inserts a
 script’s directory as the first element of <code class="code docutils literal notranslate"><span class="pre">sys.path</span></code>).  This is not guaranteed
 not to create other problems, but it works in test cases.  The default is true,
@@ -100,8 +101,8 @@ start the application and is not imported from another Python file.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install set-package-attribute
 </pre></div>
 </div>
-<p>The module can also be installed by <a class="reference external" href="https://github.com/abarker/set-package-attribute">downloading it</a> or cloning it from GitHub
-and running its <code class="code docutils literal notranslate"><span class="pre">setup.py</span></code> file in the usual way.  The clone command is:</p>
+<p>The module can also be installed by <a class="reference external" href="https://github.com/abarker/set-package-attribute">downloading it or cloning it from GitHub</a> and running its <code class="code docutils literal notranslate"><span class="pre">setup.py</span></code>
+file in the usual way.  The clone command is:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/abarker/set-package-attribute
 </pre></div>
 </div>

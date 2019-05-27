@@ -72,9 +72,9 @@ The simplest way to install is to use pip:
 
    pip install set-package-attribute
 
-The module can also be installed by `downloading it
-<https://github.com/abarker/set-package-attribute>`_ or cloning it from GitHub
-and running its `setup.py` file in the usual way.  The clone command is:
+The module can also be installed by `downloading it or cloning it from GitHub
+<https://github.com/abarker/set-package-attribute>`_ and running its `setup.py`
+file in the usual way.  The clone command is:
 
 .. code:: bash
 

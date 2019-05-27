@@ -72,8 +72,8 @@
 <span class="sd">   if __name__ == &quot;__main__&quot;:</span>
 <span class="sd">       import set_package_attribute_magic</span>
 
-<span class="sd">The `init` function takes one optional boolean parameter, `mod_path`.  If</span>
-<span class="sd">`mod_path` is true then whenever the `__package__` attribute is set by `init`</span>
+<span class="sd">The `init` function takes one optional boolean parameter, `modify_syspath`.  If</span>
+<span class="sd">`modify_syspath` is true then whenever the `__package__` attribute is set by `init`</span>
 <span class="sd">the first element of `sys.path` is also deleted.  This avoids some of the</span>
 <span class="sd">potential aliasing and shadowing problems that can arise when directories</span>
 <span class="sd">inside packages are added to `sys.path` (since Python automatically inserts a</span>
@@ -102,7 +102,28 @@
 <span class="sd">required in this case, assuming the entry-point module is only ever used to</span>
 <span class="sd">start the application and is not imported from another Python file.</span>
 
-<span class="sd">Some notes:</span>
+<span class="sd">Installation</span>
+<span class="sd">------------</span>
+
+<span class="sd">The simplest way to install is to use pip:</span>
+
+<span class="sd">.. code:: bash</span>
+
+<span class="sd">   pip install set-package-attribute</span>
+
+<span class="sd">The module can also be installed by `downloading it</span>
+<span class="sd">&lt;https://github.com/abarker/set-package-attribute&gt;`_ or cloning it from GitHub</span>
+<span class="sd">and running its `setup.py` file in the usual way.  The clone command is:</span>
+
+<span class="sd">.. code:: bash</span>
+
+<span class="sd">   git clone https://github.com/abarker/set-package-attribute</span>
+
+<span class="sd">The distribution currently consists of a single module, which could also simply</span>
+<span class="sd">be copied to somewhere in the Python path (to avoid adding a dependency).</span>
+
+<span class="sd">Some technical notes</span>
+<span class="sd">--------------------</span>
 
 <span class="sd">* Internally, this module also needs to import the package directory</span>
 <span class="sd">  containing the script module (under its full package-qualified name).  A</span>
@@ -116,8 +137,8 @@
 <span class="sd">  package-qualified module name.</span>
 
 <span class="sd">* The basic mechanism still works if the guard conditional is left off.</span>
-<span class="sd">  Without it, though, if a script in a *different* package were to explicitly</span>
-<span class="sd">  or implicity import a module which itself imports and uses</span>
+<span class="sd">  Without it, though, if a script in a *different* package/project were to</span>
+<span class="sd">  explicitly or implicity import a module which itself imports and uses</span>
 <span class="sd">  `set_package_attribute`, a potential problem would occur.  This includes</span>
 <span class="sd">  importing that module as part of its full package, say if the `__init__.py`</span>
 <span class="sd">  of that imported package imports the module (which happens quite often).</span>
@@ -145,26 +166,6 @@
 <span class="sd">  containing the top-level package directory `pkg_toplevel` (i.e., its parent</span>
 <span class="sd">  directory) needs to be in Python&#39;s package search path in order for this</span>
 <span class="sd">  approach to work.</span>
-
-<span class="sd">Installation</span>
-<span class="sd">------------</span>
-
-<span class="sd">The simplest way to install is to use pip:</span>
-
-<span class="sd">.. code:: bash</span>
-
-<span class="sd">   pip install set-package-attribute</span>
-
-<span class="sd">The module can also be installed by `downloading it</span>
-<span class="sd">&lt;https://github.com/abarker/set-package-attribute&gt;`_ or cloning it from GitHub</span>
-<span class="sd">and running its `setup.py` file in the usual way.  The clone command is:</span>
-
-<span class="sd">.. code:: bash</span>
-
-<span class="sd">   git clone https://github.com/abarker/set-package-attribute</span>
-
-<span class="sd">The distribution currently consists of a single module, which could also simply</span>
-<span class="sd">be copied to somewhere in the Python path (to avoid adding a dependency).</span>
 
 <span class="sd">Further details</span>
 <span class="sd">---------------</span>
@@ -204,16 +205,18 @@
 <span class="sd">---------</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1"># TODO</span>
+<span class="c1"># TODO:</span>
 <span class="c1">#</span>
-<span class="c1"># 1) Consider adding a module `set_package_attribute_direct` which only needs an import</span>
-<span class="c1">#    and just calls the default `init` function.  Lazy shortcut.</span>
+<span class="c1"># Maybe: the set_package_attribute_magic could introspect to find the calling module,</span>
+<span class="c1"># like pytest-helper, and test itself whether it is `__main__`.  That adds a little</span>
+<span class="c1"># overhead at startup, but if used inside a guard conditional it only runs when actually</span>
+<span class="c1"># running as a script.  Adding this would be backward compatible, so no rush.</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
-<span class="k">def</span> <span class="nf">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_set_package_attribute</span><span class="p">(</span><span class="n">modify_syspath</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.&quot;&quot;&quot;</span>
     <span class="c1"># Get the module named __main__ from sys.modules.</span>
@@ -264,7 +267,7 @@
             <span class="c1">#assert full_module_name in sys.modules # True</span>
 
             <span class="c1">#assert os.path.abspath(sys.path[0]) == script_dirname # True</span>
-            <span class="k">if</span> <span class="n">mod_path</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">modify_syspath</span><span class="p">:</span>
                 <span class="n">_delete_sys_path_0</span><span class="p">()</span>
 
 <span class="n">deleted_sys_path_0_value</span> <span class="o">=</span> <span class="kc">None</span>
@@ -273,18 +276,26 @@
     <span class="sd">&quot;&quot;&quot;Delete the first entry on `sys.path`, but only if this routine has not deleted it</span>
 <span class="sd">    already.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">deleted_sys_path_0_value</span>
-    <span class="k">if</span> <span class="n">deleted_sys_path_0_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">deleted_sys_path_0_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">deleted_sys_path_0_value</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_restore_sys_path_0</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Delete the first entry on `sys.path`, but only if this routine has not deleted it</span>
+<span class="sd">    already.&quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">deleted_sys_path_0_value</span>
+    <span class="k">if</span> <span class="n">deleted_sys_path_0_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">deleted_sys_path_0_value</span><span class="p">)</span>
+        <span class="n">deleted_sys_path_0_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="init"><a class="viewcode-back" href="../index.html#set_package_attribute.init">[docs]</a><span class="k">def</span> <span class="nf">init</span><span class="p">(</span><span class="n">modify_syspath</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Set the `__package__` attribute of the module `__main__` if it is not</span>
 <span class="sd">    already set.</span>
 
-<span class="sd">    If `mod_path` is true then whenever the `__package__` attribute is set</span>
+<span class="sd">    If `modify_syspath` is true then whenever the `__package__` attribute is set</span>
 <span class="sd">    the first element of `sys.path` (the current</span>
 <span class="sd">    directory of the script) is also deleted from the path list.&quot;&quot;&quot;</span>
-    <span class="n">_set_package_attribute</span><span class="p">(</span><span class="n">mod_path</span><span class="o">=</span><span class="n">mod_path</span><span class="p">)</span></div>
+    <span class="n">_set_package_attribute</span><span class="p">(</span><span class="n">modify_syspath</span><span class="o">=</span><span class="n">modify_syspath</span><span class="p">)</span></div>
 
 </pre></div>
 

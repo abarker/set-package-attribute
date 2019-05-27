@@ -1,0 +1,2 @@
+set_package_attribute
+set_package_attribute_magic

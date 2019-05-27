@@ -237,9 +237,17 @@ def _delete_sys_path_0():
     """Delete the first entry on `sys.path`, but only if this routine has not deleted it
     already."""
     global deleted_sys_path_0_value
-    if deleted_sys_path_0_value is not None:
+    if deleted_sys_path_0_value is None:
         deleted_sys_path_0_value = sys.path[0]
         del sys.path[0]
+
+def _restore_sys_path_0():
+    """Delete the first entry on `sys.path`, but only if this routine has not deleted it
+    already."""
+    global deleted_sys_path_0_value
+    if deleted_sys_path_0_value is not None:
+        sys.path.insert(0, deleted_sys_path_0_value)
+        deleted_sys_path_0_value = None
 
 def init(mod_path=True):
     """Set the `__package__` attribute of the module `__main__` if it is not

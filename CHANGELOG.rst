@@ -3,6 +3,15 @@
 History
 =======
 
+0.2.1 (2019-05-27)
+------------------
+
+Bug Fixes:
+
+* Fixed bug in the deleting sys.path[0] routine.
+
+* Added a corresponding restore routine to restore it.
+
 0.2.0 (2019-05-06)
 ------------------
 

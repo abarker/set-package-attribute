@@ -6,9 +6,13 @@ History
 0.2.1 (2019-05-27)
 ------------------
 
+Changes:
+
+* The ``mod_path`` keyword argument to ``init`` has been changed to ``modify_syspath``.
+
 Bug Fixes:
 
-* Fixed bug in the deleting sys.path[0] routine.
+* Fixed bug in the routine for deleting ``sys.path[0]``.
 
 * Added a corresponding restore routine to restore it.
 

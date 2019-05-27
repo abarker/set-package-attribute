@@ -8,7 +8,7 @@ Test set_package_attribute, from the subsubdir level.
 from __future__ import print_function, division, absolute_import
 if __name__ == "__main__":
     import set_package_attribute
-    set_package_attribute.init(mod_path=True)
+    set_package_attribute.init(modify_syspath=True)
 
 # Import from top level.
 
@@ -54,7 +54,7 @@ assert subsubdir_imp_1.value is value
 ##     from subsubdir_module import value
 ## except ImportError:
 ##     # As ordinary package, fail since absolue_import is used (from future for Py2).
-##     # When run as script, fail since mod_path=True will remove the script's dir.
+##     # When run as script, fail since modify_syspath=True will remove the script's dir.
 ##     assert True
 ## else:
 ##     assert not "Import still worked after removing sys.path[0], is dir on path elsewhere?"

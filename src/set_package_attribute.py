@@ -33,8 +33,8 @@ shortcut you can perform a single import which will call `init` automatically::
    if __name__ == "__main__":
        import set_package_attribute_magic
 
-The `init` function takes one optional boolean parameter, `mod_path`.  If
-`mod_path` is true then whenever the `__package__` attribute is set by `init`
+The `init` function takes one optional boolean parameter, `modify_syspath`.  If
+`modify_syspath` is true then whenever the `__package__` attribute is set by `init`
 the first element of `sys.path` is also deleted.  This avoids some of the
 potential aliasing and shadowing problems that can arise when directories
 inside packages are added to `sys.path` (since Python automatically inserts a
@@ -177,7 +177,7 @@ from __future__ import print_function, division, absolute_import
 import os
 import sys
 
-def _set_package_attribute(mod_path):
+def _set_package_attribute(modify_syspath):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set."""
     # Get the module named __main__ from sys.modules.
@@ -228,7 +228,7 @@ def _set_package_attribute(mod_path):
             #assert full_module_name in sys.modules # True
 
             #assert os.path.abspath(sys.path[0]) == script_dirname # True
-            if mod_path:
+            if modify_syspath:
                 _delete_sys_path_0()
 
 deleted_sys_path_0_value = None
@@ -249,12 +249,12 @@ def _restore_sys_path_0():
         sys.path.insert(0, deleted_sys_path_0_value)
         deleted_sys_path_0_value = None
 
-def init(mod_path=True):
+def init(modify_syspath=True):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set.
 
-    If `mod_path` is true then whenever the `__package__` attribute is set
+    If `modify_syspath` is true then whenever the `__package__` attribute is set
     the first element of `sys.path` (the current
     directory of the script) is also deleted from the path list."""
-    _set_package_attribute(mod_path=mod_path)
+    _set_package_attribute(modify_syspath=modify_syspath)
 

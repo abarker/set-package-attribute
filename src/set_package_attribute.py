@@ -177,6 +177,8 @@ from __future__ import print_function, division, absolute_import
 import os
 import sys
 
+already_set_attribute = False # Used to avoid problems if called twice.
+
 def _set_package_attribute(modify_syspath):
     """Set the `__package__` attribute of the module `__main__` if it is not
     already set."""
@@ -203,33 +205,36 @@ def _set_package_attribute(modify_syspath):
             parent_dirs.append(name)
 
         if parent_dirs: # Does nothing if no __init__.py file was found.
-
-            # Build the name of the subpackage the "__main__" module is in, and set
-            # the __package__ variable to it.
-            # Note: the subpackage name does not include the name of the module itself.
-            full_subpackage_name = ".".join(reversed(parent_dirs))
-            main_module.__package__ = full_subpackage_name
-
-            # Now do the actual import of the subpackage.
-            # Note: the script's module loads and initializes *twice* if you import
-            # full_module_name rather than subpackage_module!
-
-            # Normally you insert to sys.path as position one, leaving the script's
-            # directory in position zero.  Here, though, it is temporary and we want
-            # to avoid name shadowing so we insert at position zero.
-            sys.path.insert(0, dirname)
-            subpackage_module = __import__(full_subpackage_name)
-            del sys.path[0] # Remove the added path; no longer needed.
-
-            #assert full_subpackage_name in sys.modules # True
-            full_module_name = full_subpackage_name + "." + script_module_name
-            #assert full_module_name not in sys.modules # True
-            sys.modules[full_module_name] = main_module
-            #assert full_module_name in sys.modules # True
-
             #assert os.path.abspath(sys.path[0]) == script_dirname # True
             if modify_syspath:
                 _delete_sys_path_0()
+
+            global already_set_attribute
+            if not already_set_attribute:
+                # Build the name of the subpackage the "__main__" module is in, and set
+                # the __package__ variable to it.
+                # Note: the subpackage name does not include the name of the module itself.
+                full_subpackage_name = ".".join(reversed(parent_dirs))
+                main_module.__package__ = full_subpackage_name
+
+                # Now do the actual import of the subpackage.
+                # Note: the script's module loads and initializes *twice* if you import
+                # full_module_name rather than subpackage_module!
+
+                # Normally you insert to sys.path as position one, leaving the script's
+                # directory in position zero.  Here, though, it is temporary and we want
+                # to avoid name shadowing so we insert at position zero.
+                sys.path.insert(0, dirname)
+                subpackage_module = __import__(full_subpackage_name)
+                del sys.path[0] # Remove the added path; no longer needed.
+
+                #assert full_subpackage_name in sys.modules # True
+                full_module_name = full_subpackage_name + "." + script_module_name
+                #assert full_module_name not in sys.modules # True
+                sys.modules[full_module_name] = main_module
+                #assert full_module_name in sys.modules # True
+
+            already_set_attribute = True
 
 deleted_sys_path_0_value = None
 

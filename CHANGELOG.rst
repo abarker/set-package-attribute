@@ -3,6 +3,14 @@
 History
 =======
 
+0.2.2 (2019-05-27)
+------------------
+
+Changes:
+
+* Now will only run once, even if called twice in a module.  The ``modify_syspath`` setting
+  will be honored, if it wasn't done before.
+
 0.2.1 (2019-05-27)
 ------------------
 

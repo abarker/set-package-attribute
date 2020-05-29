@@ -3,6 +3,11 @@
 History
 =======
 
+0.2.4 (2020-05-29)
+------------------
+
+Only minor documentation formatting and editing.
+
 0.2.3 (2019-05-27)
 ------------------
 

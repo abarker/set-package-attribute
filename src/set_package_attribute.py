@@ -5,8 +5,12 @@
 Description
 -----------
 
-In order to run a module inside a package as a script and have explicit
-relative imports work, the `__package__` attribute of the module should be set.
+Modules inside packages cannot ordinarily be run as scripts if they use
+explicit relative imports or if they import any module which uses explicit
+relative imports.  Setting the `__package__` attribute of the module allows
+these imports to work as usual, but it is not quite as simple as just setting
+the attribute.
+
 Importing `set_package_attribute` from such a script and running its `init`
 function will set the `__package__` attribute of the script's module (which is
 always `__main__`).  This is intended for use in any module inside a package which
@@ -22,11 +26,12 @@ only runs when the module is executed as a script::
        import set_package_attribute
        set_package_attribute.init()
 
-Nothing else is required.  The `init` function must be called **before** any
-within-package explicit relative imports, and before importing any modules from
-within the same package which themselves use such imports.  Any previously-set
-`__package__` attribute (other than `None`) will be left unchanged, so running
-the `init` twice is the same as running it once.
+The guard conditional is not required if the module is *only* ever run as a
+script, i.e., if it is never imported by any module.  The `init` function must
+be called **before** any within-package explicit relative imports, and before
+importing any modules from within the same package which themselves use such
+imports.  Any previously-set `__package__` attribute (other than `None`) will
+be left unchanged, so running the `init` twice is the same as running it once.
 
 If you are happy with the default values to the `init` arguments then as a
 shortcut you can perform a single import which will call `init` automatically::

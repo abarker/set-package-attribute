@@ -6,8 +6,8 @@ set-package-attribute
 
 Run modules inside packages as scripts.  Automatically sets the `__package__`
 attribute of any script which imports it and calls the initialization function
-`set_package_attribute.init()`.  This is usually done so that the usual
-intra-package imports work for scripts inside packages.
+`set_package_attribute.init()`.  This allows the script to use explicit relative
+imports, which fail otherwise.
 
 For full documentation, see https://abarker.github.io/set-package-attribute.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,9 +26,10 @@ when the module is executed as a script::
        import set_package_attribute
        set_package_attribute.init()
 
-Nothing else is required.  The `init` function must be called **before** any
-within-package explicit relative imports, and before importing any modules from
-within the same package which themselves use such imports.  
+The guard conditional is not required if the module is *only* ever run as a
+script, i.e., if it is never imported by any module.  The `init` function must
+be called **before** any explicit relative imports, and before importing any
+modules from within the same package which themselves use such imports.  
 
 If you are happy with the default `init` arguments then there is a shortcut
 import which automatically calls `init` for you::

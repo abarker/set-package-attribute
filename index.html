@@ -5,15 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <title>set-package-attribute &#8212; set-package-attribute  documentation</title>
-    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="_static/language_data.js"></script>
-    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
   </head><body>
@@ -41,9 +39,12 @@
 explicit relative imports are used.</p>
 <span class="target" id="module-set_package_attribute"></span><div class="section" id="description">
 <h2>Description<a class="headerlink" href="#description" title="Permalink to this headline">¶</a></h2>
-<p>In order to run a module inside a package as a script and have explicit
-relative imports work, the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute of the module should be set.
-Importing <code class="code docutils literal notranslate"><span class="pre">set_package_attribute</span></code> from such a script and running its <code class="code docutils literal notranslate"><span class="pre">init</span></code>
+<p>Modules inside packages cannot ordinarily be run as scripts if they use
+explicit relative imports or if they import any module which uses explicit
+relative imports.  Setting the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute of the module allows
+these imports to work as usual, but it is not quite as simple as just setting
+the attribute.</p>
+<p>Importing <code class="code docutils literal notranslate"><span class="pre">set_package_attribute</span></code> from such a script and running its <code class="code docutils literal notranslate"><span class="pre">init</span></code>
 function will set the <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute of the script’s module (which is
 always <code class="code docutils literal notranslate"><span class="pre">__main__</span></code>).  This is intended for use in any module inside a package which
 might ever be run as a script and which either uses intra-package imports or else
@@ -57,11 +58,12 @@ only runs when the module is executed as a script:</p>
     <span class="n">set_package_attribute</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>Nothing else is required.  The <code class="code docutils literal notranslate"><span class="pre">init</span></code> function must be called <strong>before</strong> any
-within-package explicit relative imports, and before importing any modules from
-within the same package which themselves use such imports.  Any previously-set
-<code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute (other than <code class="code docutils literal notranslate"><span class="pre">None</span></code>) will be left unchanged, so running
-the <code class="code docutils literal notranslate"><span class="pre">init</span></code> twice is the same as running it once.</p>
+<p>The guard conditional is not required if the module is <em>only</em> ever run as a
+script, i.e., if it is never imported by any module.  The <code class="code docutils literal notranslate"><span class="pre">init</span></code> function must
+be called <strong>before</strong> any within-package explicit relative imports, and before
+importing any modules from within the same package which themselves use such
+imports.  Any previously-set <code class="code docutils literal notranslate"><span class="pre">__package__</span></code> attribute (other than <code class="code docutils literal notranslate"><span class="pre">None</span></code>) will
+be left unchanged, so running the <code class="code docutils literal notranslate"><span class="pre">init</span></code> twice is the same as running it once.</p>
 <p>If you are happy with the default values to the <code class="code docutils literal notranslate"><span class="pre">init</span></code> arguments then as a
 shortcut you can perform a single import which will call <code class="code docutils literal notranslate"><span class="pre">init</span></code> automatically:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>

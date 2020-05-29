@@ -5,15 +5,13 @@
   <head>
     <meta charset="utf-8" />
     <title>set_package_attribute &#8212; set-package-attribute  documentation</title>
-    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/nature.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="../_static/language_data.js"></script>
-    
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" /> 
   </head><body>
@@ -44,8 +42,12 @@
 <span class="sd">Description</span>
 <span class="sd">-----------</span>
 
-<span class="sd">In order to run a module inside a package as a script and have explicit</span>
-<span class="sd">relative imports work, the `__package__` attribute of the module should be set.</span>
+<span class="sd">Modules inside packages cannot ordinarily be run as scripts if they use</span>
+<span class="sd">explicit relative imports or if they import any module which uses explicit</span>
+<span class="sd">relative imports.  Setting the `__package__` attribute of the module allows</span>
+<span class="sd">these imports to work as usual, but it is not quite as simple as just setting</span>
+<span class="sd">the attribute.</span>
+
 <span class="sd">Importing `set_package_attribute` from such a script and running its `init`</span>
 <span class="sd">function will set the `__package__` attribute of the script&#39;s module (which is</span>
 <span class="sd">always `__main__`).  This is intended for use in any module inside a package which</span>
@@ -61,11 +63,12 @@
 <span class="sd">       import set_package_attribute</span>
 <span class="sd">       set_package_attribute.init()</span>
 
-<span class="sd">Nothing else is required.  The `init` function must be called **before** any</span>
-<span class="sd">within-package explicit relative imports, and before importing any modules from</span>
-<span class="sd">within the same package which themselves use such imports.  Any previously-set</span>
-<span class="sd">`__package__` attribute (other than `None`) will be left unchanged, so running</span>
-<span class="sd">the `init` twice is the same as running it once.</span>
+<span class="sd">The guard conditional is not required if the module is *only* ever run as a</span>
+<span class="sd">script, i.e., if it is never imported by any module.  The `init` function must</span>
+<span class="sd">be called **before** any within-package explicit relative imports, and before</span>
+<span class="sd">importing any modules from within the same package which themselves use such</span>
+<span class="sd">imports.  Any previously-set `__package__` attribute (other than `None`) will</span>
+<span class="sd">be left unchanged, so running the `init` twice is the same as running it once.</span>
 
 <span class="sd">If you are happy with the default values to the `init` arguments then as a</span>
 <span class="sd">shortcut you can perform a single import which will call `init` automatically::</span>

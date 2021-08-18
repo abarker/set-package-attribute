@@ -28,7 +28,7 @@ setup(
     version="0.2.4", # major version, minor version, patch (see PEP440)
     description="Automatically set the __package__ attribute of a script.",
     keywords=["module", "package", "import", "relative import", "script"],
-    install_requires=["wheel", "pytest>=2.0"],
+    install_requires=["wheel"],
     url="https://github.com/abarker/set-package-attribute",
 
     license="MIT",

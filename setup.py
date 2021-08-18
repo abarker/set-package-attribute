@@ -25,7 +25,7 @@ with codecs.open(os.path.join(current_dir, "README.rst"), encoding="utf-8") as f
 
 setup(
     name="set-package-attribute",
-    version="0.2.4", # major version, minor version, patch (see PEP440)
+    version="0.2.5", # major version, minor version, patch (see PEP440)
     description="Automatically set the __package__ attribute of a script.",
     keywords=["module", "package", "import", "relative import", "script"],
     install_requires=["wheel"],
